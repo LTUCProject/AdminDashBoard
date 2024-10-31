@@ -1,5 +1,5 @@
 ﻿@page "/login"
-@using Services
+@using Admin.Services
 @inject AuthService AuthService
 @inject NavigationManager Navigation
 @inject IJSRuntime JSRuntime
@@ -28,7 +28,6 @@
     </div>
 
     <button type="submit" class="btn btn-primary">Login</button>
-    <button type="button" @onclick="HandleLogout" class="btn btn-danger">Logout</button>
 </EditForm>
 
 @code {
@@ -60,9 +59,12 @@
         }
     }
 
+}
+
     private async Task HandleLogout()
     {
         await AuthService.LogoutAsync(); // Call the logout method
         Navigation.NavigateTo("/login"); // Redirect to login page after logout
     }
 }
+

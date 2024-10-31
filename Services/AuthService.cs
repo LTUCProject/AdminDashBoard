@@ -8,13 +8,13 @@ namespace Admin.Services
     {
         private readonly HttpClient _http;
         private readonly IJSRuntime _jsRuntime;
-        private readonly AuthStateService _authStateService; // Add this line
+        private readonly AuthStateService _authStateService;
 
-        public AuthService(HttpClient http, IJSRuntime jsRuntime, AuthStateService authStateService) // Update constructor
+        public AuthService(HttpClient http, IJSRuntime jsRuntime, AuthStateService authStateService)
         {
             _http = http;
             _jsRuntime = jsRuntime;
-            _authStateService = authStateService; // Initialize the AuthStateService
+            _authStateService = authStateService;
         }
 
         public async Task<bool> IsLoggedIn()
@@ -42,15 +42,14 @@ namespace Admin.Services
                 await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "username", username);
                 await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "roles", string.Join(",", result.Roles));
 
-                // Notify about login
-                _authStateService.IsLoggedIn = true;
+                _authStateService.IsLoggedIn = true; // Notify about login
 
                 return new LoginResult { Success = true, Token = result.Token, Roles = result.Roles };
             }
             else
             {
                 var errorResponse = await response.Content.ReadFromJsonAsync<ErrorResponse>();
-                return new LoginResult { Success = false, Message = errorResponse.Message ?? "Login failed. Please try again." };
+                return new LoginResult { Success = false, Message = errorResponse?.Message ?? "Login failed. Please try again." };
             }
         }
 
@@ -60,8 +59,7 @@ namespace Admin.Services
             await _jsRuntime.InvokeVoidAsync("localStorage.removeItem", "username");
             await _jsRuntime.InvokeVoidAsync("localStorage.removeItem", "roles");
 
-            // Notify about logout
-            _authStateService.IsLoggedIn = false;
+            _authStateService.IsLoggedIn = false; // Notify about logout
         }
 
         private class AccountResponse
