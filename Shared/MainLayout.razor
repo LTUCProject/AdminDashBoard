@@ -26,6 +26,10 @@
                 {
                     <NavLink class="btn btn-primary" href="login">Login</NavLink>
                 }
+                else
+                {
+                    <button class="btn btn-danger" @onclick="Logout">Logout</button>
+                }
             </div>
         </div>
 
@@ -38,7 +42,6 @@
 
 @code {
     private bool _isLoggedIn;
-    private bool _isInitialized = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -51,7 +54,13 @@
 
     private async Task CheckLoginStatus()
     {
-        var token = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "token");
-        _isLoggedIn = !string.IsNullOrEmpty(token);
+        _isLoggedIn = await AuthService.IsLoggedIn();
+    }
+
+    private async Task Logout()
+    {
+        await AuthService.LogoutAsync();
+        _isLoggedIn = false; // Update local login status
+        Navigation.NavigateTo(""); // Refresh the page or navigate to a specific page
     }
 }
