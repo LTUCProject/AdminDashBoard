@@ -1,0 +1,300 @@
+@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+
+html, body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f5f7;
+    color: #333;
+}
+
+/* General Styles */
+a, .btn-link {
+    color: #0071c1;
+    text-decoration: none;
+}
+
+    a:hover, .btn-link:hover {
+        color: #005d99;
+        text-decoration: underline;
+    }
+
+.btn-primary {
+    color: #fff;
+    background-color: #1d3557;
+    border-color: #1b2c4a;
+}
+
+.btn:focus, .btn:active:focus,
+.btn-link.nav-link:focus, .form-control:focus,
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.2rem rgba(38, 140, 251, 0.5);
+    outline: none;
+}
+
+.content {
+    padding-top: 1.5rem;
+    margin: 0 auto;
+    max-width: 1200px;
+}
+
+/* Form Validation Styles */
+.valid.modified:not([type=checkbox]) {
+    outline: 1px solid #26b050;
+}
+
+.invalid {
+    outline: 1px solid red;
+}
+
+.validation-message {
+    color: red;
+}
+
+/* Error UI */
+#blazor-error-ui {
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+    #blazor-error-ui .dismiss {
+        cursor: pointer;
+        position: absolute;
+        right: 0.75rem;
+        top: 0.5rem;
+    }
+
+.blazor-error-boundary {
+    background: url(data:image/svg+xml;base64,...) no-repeat 1rem/1.8rem, #b32121;
+    padding: 1rem 1rem 1rem 3.7rem;
+    color: white;
+}
+
+    .blazor-error-boundary::after {
+        content: "An error has occurred.";
+    }
+
+/* -------------------------------------------------------------------------------------------- Navbar -------------------------------------------------------- */
+
+/* Navbar Container */
+.custom-navbar {
+    background: linear-gradient(45deg, #1d3557, #2a9d8f);
+    padding: 1rem 2rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-bottom: 3px solid #e63946;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+    /* Navbar Brand */
+    .custom-navbar .navbar-brand {
+        font-weight: bold;
+        font-size: 1.8rem;
+        letter-spacing: 1px;
+        color: #ffffff;
+    }
+
+/* Navbar Toggler */
+.navbar-toggler {
+    border: none;
+    outline: none;
+}
+
+.navbar-toggler-icon {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" fill="white"><path d="M4 7h22M4 15h22M4 23h22"/></svg>');
+}
+
+/* Collapsed Navbar */
+.custom-collapse {
+    background-color: #f1faee;
+    transition: max-height 0.5s ease-in-out;
+    border-radius: 8px;
+}
+
+/* Nav Items */
+.nav-link {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #ffffff;
+    transition: all 0.3s ease-in-out;
+    position: relative;
+    margin-right: 1rem;
+}
+
+    .nav-link:hover {
+        color: #e63946;
+        transform: translateX(5px);
+    }
+
+    .nav-link span {
+        margin-right: 8px;
+    }
+
+    /* Active Link */
+    .nav-link.active {
+        color: #e63946;
+        border-bottom: 2px solid #e63946;
+    }
+
+/* Navbar Profile Section */
+.nav-profile {
+    display: flex;
+    align-items: center;
+}
+
+    .nav-profile img {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        margin-right: 0.5rem;
+        object-fit: cover;
+    }
+
+    .nav-profile span {
+        font-weight: 600;
+        color: #ffffff;
+    }
+
+/* Responsive Navbar */
+@media (max-width: 991px) {
+    .custom-navbar {
+        padding: 0.8rem 1rem;
+    }
+
+    .nav-link {
+        font-size: 1rem;
+        margin-right: 0;
+        padding: 0.5rem 1rem;
+    }
+
+    .custom-collapse {
+        max-height: 500px;
+        overflow-y: auto;
+    }
+}
+
+/* Smooth Transitions */
+* {
+    transition: all 0.3s ease-in-out;
+}
+
+
+
+
+/* Layout Styles */
+.admin-dashboard {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    height: 100vh;
+    background-color: #f8f9fa;
+}
+
+/* Sidebar */
+.sidebar {
+    background: linear-gradient(45deg, #1d3557, #457b9d);
+    color: white;
+    padding: 1rem;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.sidebar-header {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+}
+
+.sidebar h2 {
+    letter-spacing: 1px;
+    color: #a8dadc;
+}
+
+/* Main Content */
+.main-content {
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    overflow-y: auto;
+}
+
+/* Top Bar */
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f1faee;
+    padding: 1rem;
+    border-bottom: 2px solid #a8dadc;
+}
+
+    .top-bar h3 {
+        margin: 0;
+        font-weight: 600;
+        color: #1d3557;
+    }
+
+.link-about {
+    color: #457b9d;
+    margin-right: 1rem;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: color 0.3s ease-in-out;
+}
+
+    .link-about:hover {
+        color: #e63946;
+    }
+
+/* Logout Button */
+.btn-logout {
+    background-color: #e63946;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+    .btn-logout:hover {
+        background-color: #d62828;
+    }
+
+/* Content Section */
+.content {
+    flex-grow: 1;
+    padding: 2rem;
+    background-color: #f8f9fa;
+}
+
+/* Responsive Behavior */
+@media (max-width: 768px) {
+    .admin-dashboard {
+        grid-template-columns: 70px 1fr;
+    }
+
+    .sidebar {
+        padding: 0.5rem;
+    }
+
+    .top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .btn-logout {
+        margin-top: 0.5rem;
+    }
+}

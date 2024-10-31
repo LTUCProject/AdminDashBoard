@@ -1,0 +1,67 @@
+﻿@page "/notifications"
+@using MidProject.Models.Dto.Request2;
+@using MidProject.Models.Dto.Response
+@using Admin.Services
+@inject Admin.Services.AdminService AdminService
+
+@code {
+    [Parameter]
+    public int ClientId { get; set; }
+
+    private List<NotificationResponseDto> notifications;
+    private NotificationDto newNotification = new NotificationDto();
+
+    protected override async Task OnInitializedAsync()
+    {
+        notifications = await AdminService.GetClientNotificationsAsync(ClientId);
+    }
+
+    private async Task AddNotification()
+    {
+        if (string.IsNullOrWhiteSpace(newNotification.Message))
+        {
+            return; // Optionally handle validation error
+        }
+
+        newNotification.ClientId = ClientId;
+        await AdminService.AddNotificationAsync(newNotification);
+        notifications = await AdminService.GetClientNotificationsAsync(ClientId); // Refresh the list
+        newNotification = new NotificationDto(); // Reset form
+    }
+}
+
+<h3>Notifications for Client @ClientId</h3>
+
+<h4>Add New Notification</h4>
+<input @bind="newNotification.Message" placeholder="Enter notification message" />
+<button @onclick="AddNotification">Add Notification</button>
+
+<h4>Existing Notifications</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Message</th>
+            <th>Created At</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (notifications == null)
+        {
+            <tr>
+                <td colspan="3">Loading...</td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var notification in notifications)
+            {
+                <tr>
+                    <td>@notification.NotificationId</td>
+                    <td>@notification.Message</td>
+
+                </tr>
+            }
+        }
+    </tbody>
+</table>

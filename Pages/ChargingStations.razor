@@ -1,0 +1,97 @@
+﻿@page "/chargingstations"
+@using MidProject.Models.Dto.Request2;
+@using MidProject.Models.Dto.Response;
+@using Admin.Services;
+@inject Admin.Services.AdminService AdminService
+
+<h3>Charging Stations</h3>
+
+@if (chargingStations == null)
+{
+    <p>Loading...</p>
+}
+else if (!chargingStations.Any())
+{
+    <p>No charging stations found.</p>
+}
+else
+{
+    <form @onsubmit="CreateChargingStation">
+        <div>
+            <label>Station Location:</label>
+            <input @bind="newChargingStation.StationLocation" required />
+        </div>
+        <div>
+            <label>Location ID:</label>
+            <input type="number" @bind="newChargingStation.LocationId" required />
+        </div>
+        <div>
+            <label>Name:</label>
+            <input @bind="newChargingStation.Name" required />
+        </div>
+        <div>
+            <label>Has Parking:</label>
+            <input type="checkbox" @bind="newChargingStation.HasParking" />
+        </div>
+        <div>
+            <label>Status:</label>
+            <input @bind="newChargingStation.Status" required />
+        </div>
+        <div>
+            <label>Payment Method:</label>
+            <input @bind="newChargingStation.PaymentMethod" required />
+        </div>
+        <button type="submit">Add Charging Station</button>
+    </form>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Location</th>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var chargingStation in chargingStations)
+            {
+                <tr>
+                    <td>@chargingStation.ChargingStationId</td>
+                    <td>@chargingStation.StationLocation</td>
+                    <td>@chargingStation.Name</td>
+                    <td>@chargingStation.Status</td>
+                    <td>
+                        <button @onclick="() => DeleteChargingStation(chargingStation.ChargingStationId)" class="btn btn-danger">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<ChargingStationResponseAdminDto> chargingStations;
+    private ChargingStationDto newChargingStation = new ChargingStationDto();
+
+    protected override async Task OnInitializedAsync()
+    {
+        chargingStations = await AdminService.GetAllChargingStationsAsync();
+    }
+
+    private async Task DeleteChargingStation(int id)
+    {
+        await AdminService.DeleteChargingStationAsync(id);
+        chargingStations = await AdminService.GetAllChargingStationsAsync(); // Refresh the list
+    }
+
+    private async Task CreateChargingStation()
+    {
+        await AdminService.CreateChargingStationAsync(newChargingStation);
+        chargingStations = await AdminService.GetAllChargingStationsAsync(); // Refresh the list
+        newChargingStation = new ChargingStationDto(); // Reset form
+    }
+}

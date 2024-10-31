@@ -1,0 +1,78 @@
+﻿@using Services
+@inject AuthService AuthService
+
+<div class="@NavMenuCssClass navbar-collapse custom-collapse" id="navbarNav">
+    <nav class="nav flex-column flex-lg-row p-3">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> Home
+            </NavLink>
+        </div>
+
+        @if (_isAdmin)
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="clients">
+                    <span class="oi oi-people" aria-hidden="true"></span> Clients
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="providers">
+                    <span class="oi oi-briefcase" aria-hidden="true"></span> Providers
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="chargingstations">
+                    <span class="oi oi-bolt" aria-hidden="true"></span> Charging Stations
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="notifications">
+                    <span class="oi oi-bell" aria-hidden="true"></span> Notifications
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="subscriptions">
+                    <span class="oi oi-list" aria-hidden="true"></span> Subscriptions
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="subscriptionplans">
+                    <span class="oi oi-tag" aria-hidden="true"></span> Subscription Plans
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="vehicles">
+                    <span class="oi oi-car" aria-hidden="true"></span> Vehicles
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="locations">
+                    <span class="oi oi-location" aria-hidden="true"></span> Locations
+                </NavLink>
+            </div>
+        }
+    </nav>
+</div>
+
+@code {
+    private bool _isAdmin;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _isAdmin = await AuthService.IsAdmin();
+            StateHasChanged(); // Request re-render
+        }
+    }
+
+    private bool _collapseNavMenu = true;
+
+    private string NavMenuCssClass => _collapseNavMenu ? "collapse navbar-collapse" : "navbar-collapse show";
+
+    private void ToggleNavMenu()
+    {
+        _collapseNavMenu = !_collapseNavMenu;
+    }
+}

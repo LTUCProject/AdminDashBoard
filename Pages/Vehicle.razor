@@ -1,0 +1,99 @@
+﻿@page "/vehicles"
+@using MidProject.Models.Dto.Request2;
+@using MidProject.Models.Dto.Response
+@using Admin.Services
+@inject Admin.Services.AdminService AdminService
+
+@code {
+    private List<VehicleResponseDto> vehicles;
+    private VehicleDto newVehicle = new VehicleDto(); // Assuming VehicleDto exists for creating a vehicle
+
+    protected override async Task OnInitializedAsync()
+    {
+        vehicles = await AdminService.GetAllVehiclesAsync();
+    }
+
+    private async Task DeleteVehicle(int id)
+    {
+        await AdminService.DeleteVehicleAsync(id);
+        vehicles = await AdminService.GetAllVehiclesAsync(); // Refresh the list
+    }
+
+    private async Task CreateVehicle()
+    {
+        await AdminService.CreateVehicleAsync(newVehicle);
+        vehicles = await AdminService.GetAllVehiclesAsync(); // Refresh the list
+        newVehicle = new VehicleDto(); // Reset form
+    }
+}
+
+<h3>Vehicles</h3>
+
+<form @onsubmit="CreateVehicle">
+    <div>
+        <label>License Plate:</label>
+        <input @bind="newVehicle.LicensePlate" required />
+    </div>
+    <div>
+        <label>Model:</label>
+        <input @bind="newVehicle.Model" required />
+    </div>
+    <div>
+        <label>Year:</label>
+        <input type="number" @bind="newVehicle.Year" required />
+    </div>
+    <div>
+        <label>Battery Capacity:</label>
+        <input type="number" @bind="newVehicle.BatteryCapacity" step="0.01" required />
+    </div>
+    <div>
+        <label>Electric Type:</label>
+        <input @bind="newVehicle.ElectricType" required />
+    </div>
+    <div>
+        <label>Client ID:</label>
+        <input type="number" @bind="newVehicle.ClientId" required />
+    </div>
+    <button type="submit">Add Vehicle</button>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>License Plate</th>
+            <th>Model</th>
+            <th>Year</th>
+            <th>Battery Capacity</th>
+            <th>Electric Type</th>
+            <th>Client ID</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (vehicles == null)
+        {
+            <tr>
+                <td colspan="8">Loading...</td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var vehicle in vehicles)
+            {
+                <tr>
+                    <td>@vehicle.VehicleId</td>
+                    <td>@vehicle.LicensePlate</td>
+                    <td>@vehicle.Model</td>
+                    <td>@vehicle.Year</td>
+                    <td>@vehicle.BatteryCapacity</td>
+                    <td>@vehicle.ElectricType</td>
+                    <td>@vehicle.ClientId</td>
+                    <td>
+                        <button @onclick="() => DeleteVehicle(vehicle.VehicleId)">Delete</button>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

@@ -1,0 +1,60 @@
+﻿@page "/clients"
+@using MidProject.Models.Dto.Request;
+@using MidProject.Models.Dto.Response
+@using Admin.Services
+@inject Admin.Services.AdminService AdminService
+
+
+<h3>Clients List</h3>
+
+@if (clients == null)
+{
+    <p>Loading...</p>
+}
+else if (!clients.Any())
+{
+    <p>No clients found.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var client in clients)
+            {
+                <tr>
+                    <td>@client.ClientId</td>
+                    <td>@client.Name</td>
+                    <td>@client.Email</td>
+                    <td>
+                        <button @onclick="() => DeleteClient(client.ClientId)" class="btn btn-danger">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<ClientResponseDto> clients;
+
+    protected override async Task OnInitializedAsync()
+    {
+        clients = await AdminService.GetAllClientsAsync();
+    }
+
+    private async Task DeleteClient(int id)
+    {
+        await AdminService.DeleteClientAsync(id);
+        clients = await AdminService.GetAllClientsAsync(); // Refresh the list
+    }
+}

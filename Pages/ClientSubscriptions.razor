@@ -1,0 +1,41 @@
+﻿@page "/subscriptions"
+@using MidProject.Models.Dto.Request;
+@using MidProject.Models.Dto.Response
+@using Admin.Services
+@inject Admin.Services.AdminService AdminService
+
+<h3>Create Subscription Plan</h3>
+
+<EditForm Model="newSubscriptionPlan" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="Name" class="form-label">Name</label>
+        <InputText id="Name" class="form-control" @bind-Value="newSubscriptionPlan.Name" />
+    </div>
+    <div class="mb-3">
+        <label for="Description" class="form-label">Description</label>
+        <InputTextArea id="Description" class="form-control" @bind-Value="newSubscriptionPlan.Description" />
+    </div>
+    <div class="mb-3">
+        <label for="Price" class="form-label">Price</label>
+        <InputNumber id="Price" class="form-control" @bind-Value="newSubscriptionPlan.Price" />
+    </div>
+    <div class="mb-3">
+        <label for="DurationInDays" class="form-label">Duration (Days)</label>
+        <InputNumber id="DurationInDays" class="form-control" @bind-Value="newSubscriptionPlan.DurationInDays" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+</EditForm>
+
+@code {
+    private SubscriptionPlanDto newSubscriptionPlan = new SubscriptionPlanDto();
+
+    private async Task HandleValidSubmit()
+    {
+        await AdminService.CreateSubscriptionPlanAsync(newSubscriptionPlan);
+        // Navigate back to subscription plans list or show success message
+    }
+}

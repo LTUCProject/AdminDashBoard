@@ -1,0 +1,58 @@
+﻿@page "/login"
+@using Services
+@inject AuthService AuthService
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+
+<h3>Login</h3>
+
+@if (!string.IsNullOrEmpty(loginError))
+{
+    <div class="alert alert-danger">@loginError</div>
+}
+
+<EditForm Model="this" OnValidSubmit="HandleLoginSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <InputText id="username" @bind-Value="loginUsername" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <InputText id="password" type="password" @bind-Value="loginPassword" class="form-control" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Login</button>
+    <button type="button" @onclick="HandleLogout" class="btn btn-danger">Logout</button>
+</EditForm>
+
+@code {
+    private string loginUsername;
+    private string loginPassword;
+    private string loginError;
+
+    private async Task HandleLoginSubmit()
+    {
+        loginError = null;
+
+        var result = await AuthService.LoginAsync(loginUsername, loginPassword);
+
+        if (result.Success)
+        {
+            Navigation.NavigateTo("/"); // Redirect to home page after successful login
+        }
+        else
+        {
+            loginError = result.Message;
+        }
+    }
+
+    private async Task HandleLogout()
+    {
+        await AuthService.LogoutAsync(); // Call the logout method
+        Navigation.NavigateTo("/login"); // Redirect to login page after logout
+    }
+}

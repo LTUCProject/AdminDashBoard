@@ -1,0 +1,58 @@
+﻿@page "/providers"
+@using MidProject.Models.Dto.Request;
+@using MidProject.Models.Dto.Response
+@using Admin.Services
+@inject Admin.Services.AdminService AdminService
+
+@code {
+    private List<ProviderResponseDto> providers;
+
+    protected override async Task OnInitializedAsync()
+    {
+        providers = await AdminService.GetAllProvidersAsync();
+    }
+
+    private async Task DeleteProvider(int id)
+    {
+        await AdminService.DeleteProviderAsync(id);
+        providers = await AdminService.GetAllProvidersAsync(); // Refresh the list
+    }
+}
+
+<h3>Providers List</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Type</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (providers == null)
+        {
+            <tr>
+                <td colspan="5">Loading...</td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var provider in providers)
+            {
+                <tr>
+                    <td>@provider.ProviderId</td>
+                    <td>@provider.Name</td>
+                    <td>@provider.Email</td>
+                    <td>@provider.Type</td>
+                    <td>
+                        <button @onclick="() => DeleteProvider(provider.ProviderId)" class="btn btn-danger">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
