@@ -4,7 +4,9 @@
 @inject NavigationManager Navigation
 @inject IJSRuntime JSRuntime
 
-<h3>Login</h3>
+<h3>Login</h3>     
+
+
 
 @if (!string.IsNullOrEmpty(loginError))
 {
@@ -41,11 +43,28 @@
 
         if (result.Success)
         {
-            Navigation.NavigateTo("/"); // Redirect to home page after successful login
+            // Check if the user is an admin and navigate accordingly
+            if (await AuthService.IsAdmin())
+            {
+                Navigation.NavigateTo("/"); // Redirect to home page for Admin
+            }
+            else
+            {
+                Navigation.NavigateTo("/not-authorized"); // Redirect to Not Authorized page for non-admin
+            }
         }
         else
         {
             loginError = result.Message;
         }
     }
+
 }
+
+    private async Task HandleLogout()
+    {
+        await AuthService.LogoutAsync(); // Call the logout method
+        Navigation.NavigateTo("/login"); // Redirect to login page after logout
+    }
+}
+
