@@ -19,8 +19,8 @@
     private async Task CreateLocation()
     {
         await AdminService.CreateLocationAsync(newLocation);
-        locations = await AdminService.GetAllLocationsAsync(); // Refresh the list
-        newLocation = new LocationDto(); // Reset form
+        locations = await AdminService.GetAllLocationsAsync();
+        newLocation = new LocationDto(); 
     }
 
     private async Task UpdateLocation()
@@ -28,9 +28,9 @@
         if (editLocationId.HasValue)
         {
             await AdminService.UpdateLocationAsync(editLocationId.Value, editLocation);
-            locations = await AdminService.GetAllLocationsAsync(); // Refresh the list
-            editLocation = new LocationDto(); // Reset form
-            editLocationId = null; // Clear the ID
+            locations = await AdminService.GetAllLocationsAsync(); 
+            editLocation = new LocationDto(); 
+            editLocationId = null; 
         }
     }
 
@@ -49,7 +49,7 @@
     private async Task DeleteLocation(int id)
     {
         await AdminService.DeleteLocationAsync(id);
-        locations = await AdminService.GetAllLocationsAsync(); // Refresh the list
+        locations = await AdminService.GetAllLocationsAsync(); 
     }
 }
 

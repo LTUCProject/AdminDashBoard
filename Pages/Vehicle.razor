@@ -6,7 +6,7 @@
 
 @code {
     private List<VehicleResponseDto> vehicles;
-    private VehicleDto newVehicle = new VehicleDto(); // Assuming VehicleDto exists for creating a vehicle
+    private VehicleDto newVehicle = new VehicleDto(); 
 
     protected override async Task OnInitializedAsync()
     {
@@ -16,14 +16,14 @@
     private async Task DeleteVehicle(int id)
     {
         await AdminService.DeleteVehicleAsync(id);
-        vehicles = await AdminService.GetAllVehiclesAsync(); // Refresh the list
+        vehicles = await AdminService.GetAllVehiclesAsync(); 
     }
 
     private async Task CreateVehicle()
     {
         await AdminService.CreateVehicleAsync(newVehicle);
-        vehicles = await AdminService.GetAllVehiclesAsync(); // Refresh the list
-        newVehicle = new VehicleDto(); // Reset form
+        vehicles = await AdminService.GetAllVehiclesAsync(); 
+        newVehicle = new VehicleDto(); 
     }
 }
 

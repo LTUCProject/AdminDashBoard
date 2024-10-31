@@ -20,13 +20,13 @@
     {
         if (string.IsNullOrWhiteSpace(newNotification.Message))
         {
-            return; // Optionally handle validation error
+            return; 
         }
 
         newNotification.ClientId = ClientId;
         await AdminService.AddNotificationAsync(newNotification);
-        notifications = await AdminService.GetClientNotificationsAsync(ClientId); // Refresh the list
-        newNotification = new NotificationDto(); // Reset form
+        notifications = await AdminService.GetClientNotificationsAsync(ClientId);
+        newNotification = new NotificationDto(); 
     }
 }
 

@@ -55,6 +55,6 @@ else
     private async Task DeleteClient(int id)
     {
         await AdminService.DeleteClientAsync(id);
-        clients = await AdminService.GetAllClientsAsync(); // Refresh the list
+        clients = await AdminService.GetAllClientsAsync(); 
     }
 }

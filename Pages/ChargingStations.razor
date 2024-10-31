@@ -85,13 +85,13 @@ else
     private async Task DeleteChargingStation(int id)
     {
         await AdminService.DeleteChargingStationAsync(id);
-        chargingStations = await AdminService.GetAllChargingStationsAsync(); // Refresh the list
+        chargingStations = await AdminService.GetAllChargingStationsAsync(); 
     }
 
     private async Task CreateChargingStation()
     {
         await AdminService.CreateChargingStationAsync(newChargingStation);
-        chargingStations = await AdminService.GetAllChargingStationsAsync(); // Refresh the list
-        newChargingStation = new ChargingStationDto(); // Reset form
+        chargingStations = await AdminService.GetAllChargingStationsAsync(); 
+        newChargingStation = new ChargingStationDto(); 
     }
 }

@@ -1,45 +1,49 @@
 ﻿@inherits LayoutComponentBase
 @using Services
 @inject AuthService AuthService
-@inject IJSRuntime _jsRuntime
 @inject NavigationManager Navigation
 
 <PageTitle>EVision Admin Dashboard</PageTitle>
 
-<div class="admin-dashboard">
-    <!-- Sidebar Section -->
-    <aside class="sidebar">
-        <div class="sidebar-header">
-            <h2>EVision</h2>
+@if (!_isLoggedIn)
+{
+    <div class="login-container">
+        <h1>EVision Dashboard</h1>
+        <div class="login-form">
+            @Body
         </div>
-        <NavMenu />
-    </aside>
-
-    <!-- Main Content Section -->
-    <main class="main-content">
-        <!-- Top Navigation Bar -->
-        <div class="top-bar px-4">
-            <div class="top-bar-left">
-                <h3>Welcome, @(_isLoggedIn ? "Admin" : "Guest")</h3>
+    </div>
+}
+else
+{
+    <div class="admin-dashboard">
+        <!-- Sidebar Section -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>EVision</h2>
             </div>
-            <div class="top-bar-right">
-                @if (!_isLoggedIn)
-                {
-                    <NavLink class="btn btn-primary" href="login">Login</NavLink>
-                }
-                else
-                {
+            <NavMenu />
+        </aside>
+
+        <!-- Main Content Section -->
+        <main class="main-content">
+            <!-- Top Navigation Bar -->
+            <div class="top-bar px-4">
+                <div class="top-bar-left">
+                    <h3>Welcome, Admin</h3>
+                </div>
+                <div class="top-bar-right">
                     <button class="btn btn-danger" @onclick="Logout">Logout</button>
-                }
+                </div>
             </div>
-        </div>
 
-        <!-- Page Content -->
-        <section class="content px-4">
-            @Body <!-- This renders the content of AdminLogin.razor -->
-        </section>
-    </main>
-</div>
+            <!-- Page Content -->
+            <section class="content px-4">
+                @Body <!-- This renders the content of AdminLogin.razor -->
+            </section>
+        </main>
+    </div>
+}
 
 @code {
     private bool _isLoggedIn;
@@ -49,7 +53,7 @@
         if (firstRender)
         {
             await CheckLoginStatus();
-            StateHasChanged(); // Notify the component to re-render
+            StateHasChanged(); 
         }
     }
 
@@ -61,7 +65,7 @@
     private async Task Logout()
     {
         await AuthService.LogoutAsync();
-        _isLoggedIn = false; // Update local login status
-        Navigation.NavigateTo(""); // Refresh the page or navigate to a specific page
+        _isLoggedIn = false; 
+        Navigation.NavigateTo("/"); 
     }
 }

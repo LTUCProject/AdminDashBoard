@@ -15,7 +15,7 @@
     private async Task DeleteProvider(int id)
     {
         await AdminService.DeleteProviderAsync(id);
-        providers = await AdminService.GetAllProvidersAsync(); // Refresh the list
+        providers = await AdminService.GetAllProvidersAsync(); 
     }
 }
 
