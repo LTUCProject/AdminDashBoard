@@ -1,17 +1,16 @@
 ﻿@page "/clients"
-@using MidProject.Models.Dto.Request;
-@using MidProject.Models.Dto.Response
 @using Admin.Services
-@inject Admin.Services.AdminService AdminService
+@using Admin.Dto_s
+@inject AdminService AdminService
+@inject IJSRuntime JSRuntime // Injecting IJSRuntime
 
-
-<h3>Clients List</h3>
+<h3>Client List</h3>
 
 @if (clients == null)
 {
-    <p>Loading...</p>
+    <p><em>Loading...</em></p>
 }
-else if (!clients.Any())
+else if (clients.Count == 0)
 {
     <p>No clients found.</p>
 }
@@ -20,9 +19,9 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th>ID</th>
                 <th>Name</th>
                 <th>Email</th>
+                <th>Account ID</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -30,13 +29,11 @@ else
             @foreach (var client in clients)
             {
                 <tr>
-                    <td>@client.ClientId</td>
                     <td>@client.Name</td>
                     <td>@client.Email</td>
+                    <td>@client.AccountId</td>
                     <td>
-                        <button @onclick="() => DeleteClient(client.ClientId)" class="btn btn-danger">
-                            Delete
-                        </button>
+                        <button class="btn btn-danger" @onclick="() => DeleteClient(client.ClientId)">Delete</button>
                     </td>
                 </tr>
             }
@@ -45,16 +42,22 @@ else
 }
 
 @code {
-    private List<ClientResponseDto> clients;
+    private List<ClientBlazorDto> clients;
 
     protected override async Task OnInitializedAsync()
     {
         clients = await AdminService.GetAllClientsAsync();
     }
 
-    private async Task DeleteClient(int id)
+    private async Task DeleteClient(int clientId)
     {
-        await AdminService.DeleteClientAsync(id);
-        clients = await AdminService.GetAllClientsAsync(); 
+        // Invoke the confirmation dialog using the injected JSRuntime instance
+        var confirmed = await JSRuntime.InvokeAsync<bool>("confirm", new[] { "Are you sure you want to delete this client?" });
+
+        if (confirmed)
+        {
+            await AdminService.DeleteClientAsync(clientId);
+            clients = await AdminService.GetAllClientsAsync(); // Refresh the client list
+        }
     }
 }

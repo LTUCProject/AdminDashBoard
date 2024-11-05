@@ -3,6 +3,8 @@ using MidProject.Models.Dto.Request;
 using MidProject.Models.Dto.Request2;
 using Microsoft.JSInterop;
 using static Microsoft.AspNetCore.Razor.Language.TagHelperMetadata;
+using Admin.Dto_s;
+using System.Net.Http.Headers;
 
 
 namespace Admin.Services
@@ -20,26 +22,32 @@ namespace Admin.Services
         }
 
 
-        private async Task AddAuthorizationHeader()
+        public async Task AddAuthorizationHeader()
         {
-            var token = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "token");
-            if (!string.IsNullOrEmpty(token))
+            if (_httpClient.DefaultRequestHeaders.Contains("Authorization"))
             {
-                _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                return;
             }
+
+            // Delay the call until after the component has rendered
+            var token = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "token");
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
+
 
         //Client Services//
-        public async Task<List<ClientResponseDto>> GetAllClientsAsync()
+        public async Task<List<ClientBlazorDto>> GetAllClientsAsync()
         {
             await AddAuthorizationHeader();
-            return await _httpClient.GetFromJsonAsync<List<ClientResponseDto>>("api/Admins/Clients");
+            var response = await _httpClient.GetFromJsonAsync<ClientBlazorWrapper>("api/Admins/Clients");
+
+            return response?.Values ?? new List<ClientBlazorDto>(); // Return an empty list if response is null
         }
 
-        public async Task<ClientResponseDto> GetClientByIdAsync(int id)
+        public async Task<ClientBlazorDto> GetClientByIdAsync(int id)
         {
             await AddAuthorizationHeader();
-            return await _httpClient.GetFromJsonAsync<ClientResponseDto>($"api/Admins/Clients/{id}");
+            return await _httpClient.GetFromJsonAsync<ClientBlazorDto>($"api/Admins/Clients/{id}");
         }
 
         public async Task DeleteClientAsync(int id)
@@ -51,16 +59,20 @@ namespace Admin.Services
 
         //Provider Services//
 
-        public async Task<List<ProviderResponseDto>> GetAllProvidersAsync()
+        public async Task<List<AllProviderBlazorDto>> GetAllProvidersAsync()
         {
             await AddAuthorizationHeader();
-            return await _httpClient.GetFromJsonAsync<List<ProviderResponseDto>>("api/Admins/providers");
+            
+
+            var response = await _httpClient.GetFromJsonAsync<AllProviderBlazorWrapper>("api/Admins/providers");
+
+            return response?.Values ?? new List<AllProviderBlazorDto>(); // Return an empty list if response is null
         }
 
-        public async Task<ProviderResponseDto> GetProviderByIdAsync(int id)
+        public async Task<ProviderBlazorDto> GetProviderByIdAsync(int id)
         {
             await AddAuthorizationHeader();
-            return await _httpClient.GetFromJsonAsync<ProviderResponseDto>($"api/Admins/providers/{id}");
+            return await _httpClient.GetFromJsonAsync<ProviderBlazorDto>($"api/Admins/providers/{id}");
         }
 
         public async Task DeleteProviderAsync(int id)
@@ -72,26 +84,29 @@ namespace Admin.Services
 
 
         //SubscriptionPlan Services//
-        public async Task<List<SubscriptionPlanResponseDto>> GetAllSubscriptionPlansAsync()
+        public async Task<List<SubscriptionPlanBlazorDto>> GetAllSubscriptionPlansAsync()
         {
             await AddAuthorizationHeader();
-            return await _httpClient.GetFromJsonAsync<List<SubscriptionPlanResponseDto>>("api/Admins/SubscriptionPlans");
+
+            var response = await _httpClient.GetFromJsonAsync<SubscriptionPlanWrapper>("api/Admins/SubscriptionPlans");
+
+            return response?.Values ?? new List<SubscriptionPlanBlazorDto>(); // Return an empty list if response is null
         }
 
-        public async Task<SubscriptionPlanResponseDto> GetSubscriptionPlanByIdAsync(int id)
+        public async Task<SubscriptionPlanBlazorDto> GetSubscriptionPlanByIdAsync(int id)
         {
             await AddAuthorizationHeader();
-            return await _httpClient.GetFromJsonAsync<SubscriptionPlanResponseDto>($"api/Admins/SubscriptionPlans/{id}");
+            return await _httpClient.GetFromJsonAsync<SubscriptionPlanBlazorDto>($"api/Admins/SubscriptionPlans/{id}");
         }
 
-        public async Task<SubscriptionPlanResponseDto> CreateSubscriptionPlanAsync(SubscriptionPlanDto subscriptionPlanDto)
+        public async Task<SubscriptionPlanBlazorDto> CreateSubscriptionPlanAsync(SubscriptionPlanDto subscriptionPlanDto)
         {
             await AddAuthorizationHeader();
             var response = await _httpClient.PostAsJsonAsync("api/Admins/SubscriptionPlans", subscriptionPlanDto);
 
             if (response.IsSuccessStatusCode)
             {
-                return await response.Content.ReadFromJsonAsync<SubscriptionPlanResponseDto>();
+                return await response.Content.ReadFromJsonAsync<SubscriptionPlanBlazorDto>();
             }
 
             // Handle non-success status codes
@@ -105,6 +120,7 @@ namespace Admin.Services
             await AddAuthorizationHeader();
             await _httpClient.DeleteAsync($"api/Admins/SubscriptionPlans/{id}");
         }
+
 
         public async Task<List<ClientSubscriptionResponseDto>> GetClientSubscriptionsAsync(int clientId)
         {
@@ -120,10 +136,13 @@ namespace Admin.Services
         
 
         //Notification Services//
-        public async Task<List<NotificationResponseDto>> GetClientNotificationsAsync(int clientId)
+        public async Task<List<NotificationBlazorDto>> GetClientNotificationsAsync(int clientId)
         {
             await AddAuthorizationHeader();
-            return await _httpClient.GetFromJsonAsync<List<NotificationResponseDto>>($"api/Admins/Clients/{clientId}/Notifications");
+
+            var response = await _httpClient.GetFromJsonAsync<NotificationBlazorWrapper>("api/Admins/Clients/{clientId}/Notifications");
+
+            return response?.Values ?? new List<NotificationBlazorDto>(); // Return an empty list if response is null
         }
 
         public async Task<NotificationDto> AddNotificationAsync(NotificationDto notificationDto)
@@ -134,45 +153,39 @@ namespace Admin.Services
         //Notification Services//
 
 
-        //CharginigStation Services//
-        public async Task<List<ChargingStationResponseAdminDto>> GetAllChargingStationsAsync()
+        // ChargingStation Services
+        public async Task<List<ChargingStationBlazorDto>> GetAllChargingStationsAsync() // Corrected class name
         {
             await AddAuthorizationHeader();
-            return await _httpClient.GetFromJsonAsync<List<ChargingStationResponseAdminDto>>("api/Admins/ChargingStations");
+            var response = await _httpClient.GetFromJsonAsync<ChargingStationBlazorWrapper>("api/Admins/ChargingStations"); // Corrected wrapper class name
+
+            // Return an empty list if response is null
+            return response?.Values ?? new List<ChargingStationBlazorDto>();
         }
 
-        public async Task<ChargingStationResponseAdminDto> GetChargingStationByIdAsync(int id)
-        {
-            await AddAuthorizationHeader();
-            return await _httpClient.GetFromJsonAsync<ChargingStationResponseAdminDto>($"api/Admins/ChargingStations/{id}");
-        }
+       
 
         public async Task DeleteChargingStationAsync(int id)
         {
             await AddAuthorizationHeader();
             await _httpClient.DeleteAsync($"api/Admins/ChargingStations/{id}");
         }
+        // ChargingStation Services
 
-        public async Task CreateChargingStationAsync(ChargingStationDto chargingStationDto)
+
+        // Vehicle Services //
+
+        public async Task<List<VehicleBlazorDto>> GetAllVehiclesAsync()
         {
             await AddAuthorizationHeader();
-            var response = await _httpClient.PostAsJsonAsync("api/Admins/ChargingStations", chargingStationDto);
-            response.EnsureSuccessStatusCode();
-        }
-        //CharginigStation Services//
-
-        //Vehicle Services//
-
-        public async Task<List<VehicleResponseDto>> GetAllVehiclesAsync()
-        {
-            await AddAuthorizationHeader();
-            return await _httpClient.GetFromJsonAsync<List<VehicleResponseDto>>("api/Admins/Vehicles");
+            var wrapper = await _httpClient.GetFromJsonAsync<VehicleBlazorWrapper>("api/Admins/Vehicles");
+            return wrapper?.Values ?? new List<VehicleBlazorDto>();
         }
 
-        public async Task<VehicleResponseDto> GetVehicleByIdAsync(int id)
+        public async Task<VehicleBlazorDto> GetVehicleByIdAsync(int id)
         {
             await AddAuthorizationHeader();
-            return await _httpClient.GetFromJsonAsync<VehicleResponseDto>($"api/Admins/Vehicles/{id}");
+            return await _httpClient.GetFromJsonAsync<VehicleBlazorDto>($"api/Admins/Vehicles/{id}");
         }
 
         public async Task DeleteVehicleAsync(int id)
@@ -181,49 +194,14 @@ namespace Admin.Services
             await _httpClient.DeleteAsync($"api/Admins/Vehicles/{id}");
         }
 
-        public async Task CreateVehicleAsync(VehicleDto vehicleDto)
+        public async Task CreateVehicleAsync(VehicleBlazorDto vehicleDto)
         {
             await AddAuthorizationHeader();
             var response = await _httpClient.PostAsJsonAsync("api/Admins/Vehicles", vehicleDto);
             response.EnsureSuccessStatusCode();
         }
-        //Vehicle Services//
 
-        //Location Services//
-        public async Task<List<LocationResponseDto>> GetAllLocationsAsync()
-        {
-            await AddAuthorizationHeader();
-            return await _httpClient.GetFromJsonAsync<List<LocationResponseDto>>("api/Admins/Locations");
-        }
-
-        public async Task<LocationResponseDto> GetLocationByIdAsync(int id)
-        {
-            await AddAuthorizationHeader();
-            return await _httpClient.GetFromJsonAsync<LocationResponseDto>($"api/Admins/Locations/{id}");
-        }
-
-        public async Task CreateLocationAsync(LocationDto locationDto)
-        {
-            await AddAuthorizationHeader();
-            var response = await _httpClient.PostAsJsonAsync("api/Admins/Locations", locationDto);
-            response.EnsureSuccessStatusCode();
-        }
-
-        public async Task UpdateLocationAsync(int id, LocationDto locationDto)
-        {
-            await AddAuthorizationHeader();
-            var response = await _httpClient.PutAsJsonAsync($"api/Admins/Locations/{id}", locationDto);
-            response.EnsureSuccessStatusCode();
-        }
-
-        public async Task DeleteLocationAsync(int id)
-        {
-            await AddAuthorizationHeader();
-            await _httpClient.DeleteAsync($"api/Admins/Locations/{id}");
-        }
-        //Location Services//
-
-
+        // Vehicle Services //
 
     }
 }

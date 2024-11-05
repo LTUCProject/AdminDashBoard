@@ -1,6 +1,7 @@
 ﻿using Microsoft.JSInterop;
 using System.Net.Http.Json;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Admin.Services
 {
@@ -38,19 +39,27 @@ namespace Admin.Services
             if (response.IsSuccessStatusCode)
             {
                 var result = await response.Content.ReadFromJsonAsync<AccountResponse>();
-                await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "token", result.Token);
-                await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "username", username);
-                await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "roles", string.Join(",", result.Roles));
 
-                _authStateService.IsLoggedIn = true; // Notify about login
+                if (result != null)
+                {
+                    // Store token and username
+                    await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "token", result.Token);
+                    await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "username", username);
 
-                return new LoginResult { Success = true, Token = result.Token, Roles = result.Roles };
+                    // Store roles if they exist
+                    var rolesList = result.Roles?.Values ?? new List<string>();
+                    var rolesString = string.Join(",", rolesList);
+                    await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "roles", rolesString);
+
+                    _authStateService.IsLoggedIn = true; // Notify about login
+
+                    return new LoginResult { Success = true, Token = result.Token, Roles = rolesList };
+                }
             }
-            else
-            {
-                var errorResponse = await response.Content.ReadFromJsonAsync<ErrorResponse>();
-                return new LoginResult { Success = false, Message = errorResponse?.Message ?? "Login failed. Please try again." };
-            }
+
+            // If login fails
+            var errorResponse = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+            return new LoginResult { Success = false, Message = errorResponse?.Message ?? "Login failed. Please try again." };
         }
 
         public async Task LogoutAsync()
@@ -65,7 +74,13 @@ namespace Admin.Services
         private class AccountResponse
         {
             public string Token { get; set; }
-            public List<string> Roles { get; set; }
+            public RolesContainer Roles { get; set; } // Updated to use RolesContainer
+        }
+
+        private class RolesContainer
+        {
+            [JsonPropertyName("$values")]
+            public List<string> Values { get; set; } // Deserialize $values directly
         }
 
         private class ErrorResponse

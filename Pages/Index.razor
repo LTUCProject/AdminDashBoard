@@ -3,27 +3,25 @@
 @inject AuthService AuthService
 @inject NavigationManager Navigation
 
-<p>Welcome to your new app, the admin dashboard for managing electric vehicle operations.</p>
-<p>This dashboard provides an overview of the system, allowing you to manage clients, service providers, charging stations, and notifications efficiently.</p>
+<h1>Welcome to your EVision Admin Dashboard</h1>
+<p>This dashboard provides a comprehensive overview of managing electric vehicle operations effectively.</p>
 
 <div class="features">
     <h2>Key Features:</h2>
     <ul>
-        <li><strong>Client Management:</strong> Easily add, update, and remove client information.</li>
-        <li><strong>Provider Management:</strong> Oversee service providers associated with the EV operations.</li>
-        <li><strong>Charging Station Monitoring:</strong> View and manage all charging stations in your network.</li>
-        <li><strong>Notifications:</strong> Send and receive important notifications related to EV management.</li>
-        <li><strong>Subscription Plans:</strong> Manage subscription plans for users.</li>
-        <li><strong>Data Analytics:</strong> Analyze data related to EV usage and trends to enhance operations.</li>
+        <li><strong>Client Management:</strong> Manage client information seamlessly.</li>
+        <li><strong>Provider Management:</strong> Oversee service providers effectively.</li>
+        <li><strong>Charging Station Monitoring:</strong> Keep track of all charging stations in your network.</li>
+        <li><strong>Notifications:</strong> Stay updated with important notifications.</li>
+        <li><strong>Subscription Plans:</strong> Manage subscription plans with ease.</li>
+        <li><strong>Data Analytics:</strong> Analyze EV usage and trends to optimize operations.</li>
     </ul>
 </div>
-
-<p>How is Blazor working for you? Please take our brief survey and tell us what you think.</p>
 
 @if (!_isAdmin)
 {
     <div class="login-container">
-        <h2>Login to your account</h2>
+        <h2>Login to Your Account</h2>
         <button class="btn btn-primary" @onclick="NavigateToLogin">Login</button>
     </div>
 }
@@ -36,12 +34,12 @@
         if (firstRender)
         {
             _isAdmin = await AuthService.IsAdmin();
-            StateHasChanged(); 
+            StateHasChanged();
         }
     }
 
     private void NavigateToLogin()
     {
-        Navigation.NavigateTo("/login"); 
+        Navigation.NavigateTo("/login");
     }
 }

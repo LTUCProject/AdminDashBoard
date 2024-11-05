@@ -1,5 +1,6 @@
 ﻿@page "/subscriptionplans"
 @using Admin.Services
+@using Admin.Dto_s
 @using MidProject.Models.Dto.Response
 @inject Admin.Services.AdminService AdminService
 
@@ -43,7 +44,7 @@ else
 <button class="btn btn-primary" @onclick="ShowCreatePlanModal">Add Subscription Plan</button>
 
 @code {
-    private List<SubscriptionPlanResponseDto> subscriptionPlans;
+    private List<SubscriptionPlanBlazorDto> subscriptionPlans;
 
     protected override async Task OnInitializedAsync()
     {

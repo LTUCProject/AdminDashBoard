@@ -2,13 +2,14 @@
 @using MidProject.Models.Dto.Request2;
 @using MidProject.Models.Dto.Response
 @using Admin.Services
+@using Admin.Dto_s
 @inject Admin.Services.AdminService AdminService
 
 @code {
     [Parameter]
     public int ClientId { get; set; }
 
-    private List<NotificationResponseDto> notifications;
+    private List<NotificationBlazorDto> notifications;
     private NotificationDto newNotification = new NotificationDto();
 
     protected override async Task OnInitializedAsync()

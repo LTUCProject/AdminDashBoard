@@ -1,97 +1,92 @@
 ﻿@page "/chargingstations"
-@using MidProject.Models.Dto.Request2;
 @using MidProject.Models.Dto.Response;
 @using Admin.Services;
+@using Admin.Dto_s;
 @inject Admin.Services.AdminService AdminService
+@inject IJSRuntime JSRuntime  // Inject IJSRuntime
 
-<h3>Charging Stations</h3>
+<h3 class="text-center">Charging Stations Management</h3>
 
 @if (chargingStations == null)
 {
-    <p>Loading...</p>
+        <div class="text-center">
+            <p class="spinner-border" role="status"><span class="sr-only">Loading...</span></p>
+        </div>
 }
 else if (!chargingStations.Any())
 {
-    <p>No charging stations found.</p>
+        <div class="alert alert-warning text-center">
+            <p>No charging stations found.</p>
+            <p>Please refresh the page or check back later.</p>
+        </div>
 }
 else
 {
-    <form @onsubmit="CreateChargingStation">
-        <div>
-            <label>Station Location:</label>
-            <input @bind="newChargingStation.StationLocation" required />
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Location</th>
+                        <th>Name</th>
+                        <th>Status</th>
+                        <th>Address</th>
+                        <th>Latitude</th>
+                        <th>Longitude</th>
+                        <th>Provider</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var chargingStation in chargingStations)
+                {
+                            <tr>
+                                <td>@chargingStation.ChargingStationId</td>
+                                <td>@chargingStation.StationLocation</td>
+                                <td>@chargingStation.Name</td>
+                                <td>@chargingStation.Status</td>
+                                <td>@chargingStation.Address</td>
+                                <td>@chargingStation.Latitude</td>
+                                <td>@chargingStation.Longitude</td>
+                                <td>@chargingStation.Provider?.Name</td>
+                                <td>
+                                    <button @onclick="() => ConfirmDelete(chargingStation.ChargingStationId)" class="btn btn-danger btn-sm">
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                }
+                </tbody>
+            </table>
         </div>
-        <div>
-            <label>Location ID:</label>
-            <input type="number" @bind="newChargingStation.LocationId" required />
-        </div>
-        <div>
-            <label>Name:</label>
-            <input @bind="newChargingStation.Name" required />
-        </div>
-        <div>
-            <label>Has Parking:</label>
-            <input type="checkbox" @bind="newChargingStation.HasParking" />
-        </div>
-        <div>
-            <label>Status:</label>
-            <input @bind="newChargingStation.Status" required />
-        </div>
-        <div>
-            <label>Payment Method:</label>
-            <input @bind="newChargingStation.PaymentMethod" required />
-        </div>
-        <button type="submit">Add Charging Station</button>
-    </form>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Location</th>
-                <th>Name</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var chargingStation in chargingStations)
-            {
-                <tr>
-                    <td>@chargingStation.ChargingStationId</td>
-                    <td>@chargingStation.StationLocation</td>
-                    <td>@chargingStation.Name</td>
-                    <td>@chargingStation.Status</td>
-                    <td>
-                        <button @onclick="() => DeleteChargingStation(chargingStation.ChargingStationId)" class="btn btn-danger">
-                            Delete
-                        </button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
 }
 
 @code {
-    private List<ChargingStationResponseAdminDto> chargingStations;
-    private ChargingStationDto newChargingStation = new ChargingStationDto();
+    private List<ChargingStationBlazorDto> chargingStations;
 
     protected override async Task OnInitializedAsync()
     {
-        chargingStations = await AdminService.GetAllChargingStationsAsync();
+        await LoadChargingStations();
     }
 
-    private async Task DeleteChargingStation(int id)
+    private async Task LoadChargingStations()
     {
-        await AdminService.DeleteChargingStationAsync(id);
-        chargingStations = await AdminService.GetAllChargingStationsAsync(); 
+        chargingStations = (await AdminService.GetAllChargingStationsAsync()).ToList();
     }
 
-    private async Task CreateChargingStation()
+    private async Task ConfirmDelete(int id)
     {
-        await AdminService.CreateChargingStationAsync(newChargingStation);
-        chargingStations = await AdminService.GetAllChargingStationsAsync(); 
-        newChargingStation = new ChargingStationDto(); 
+        bool confirmed = await ShowDeleteConfirmation();
+        if (confirmed)
+        {
+            await AdminService.DeleteChargingStationAsync(id);
+            await LoadChargingStations(); // Refresh the list after deletion
+        }
+    }
+
+    private async Task<bool> ShowDeleteConfirmation()
+    {
+        // Call JavaScript function for confirmation
+        return await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to delete this charging station?");
     }
 }

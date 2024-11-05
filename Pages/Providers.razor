@@ -1,11 +1,10 @@
 ﻿@page "/providers"
-@using MidProject.Models.Dto.Request;
-@using MidProject.Models.Dto.Response
+@using Admin.Dto_s
 @using Admin.Services
 @inject Admin.Services.AdminService AdminService
 
 @code {
-    private List<ProviderResponseDto> providers;
+    private List<AllProviderBlazorDto> providers;
 
     protected override async Task OnInitializedAsync()
     {

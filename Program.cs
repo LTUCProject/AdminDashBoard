@@ -22,11 +22,10 @@ namespace Admin
             {
                 client.BaseAddress = new Uri("https://localhost:7080/"); // Replace with your API URL
             });
+
             builder.Services.AddAuthenticationCore();
             builder.Services.AddScoped<AuthStateService>();
             builder.Services.AddScoped<AuthService>();
-
-
 
             // Configure CORS if needed
             builder.Services.AddCors(options =>
