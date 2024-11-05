@@ -167,6 +167,8 @@ namespace Admin.Services
 
         public async Task DeleteChargingStationAsync(int id)
         {
+
+
             await AddAuthorizationHeader();
             await _httpClient.DeleteAsync($"api/Admins/ChargingStations/{id}");
         }
