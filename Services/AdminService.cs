@@ -133,22 +133,20 @@ namespace Admin.Services
             await _httpClient.DeleteAsync($"api/Admins/Subscriptions/{clientSubscriptionId}");
         }
         //SubscriptionPlan Services//
-        
+
 
         //Notification Services//
-        public async Task<List<NotificationBlazorDto>> GetClientNotificationsAsync(int clientId)
+        public async Task AddNotificationForAllClientsAsync(NotificationDto notificationDto)
         {
             await AddAuthorizationHeader();
 
-            var response = await _httpClient.GetFromJsonAsync<NotificationBlazorWrapper>("api/Admins/Clients/{clientId}/Notifications");
+            // Send a notification to all clients
+            var response = await _httpClient.PostAsJsonAsync("api/Admins/Notifications", notificationDto);
 
-            return response?.Values ?? new List<NotificationBlazorDto>(); // Return an empty list if response is null
-        }
-
-        public async Task<NotificationDto> AddNotificationAsync(NotificationDto notificationDto)
-        {
-            var response = await _httpClient.PostAsJsonAsync($"api/Admins/Clients/{notificationDto.ClientId}/Notifications", notificationDto);
-            return await response.Content.ReadFromJsonAsync<NotificationDto>();
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception("Failed to send notification to all clients.");
+            }
         }
         //Notification Services//
 

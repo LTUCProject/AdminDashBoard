@@ -61,6 +61,21 @@ namespace Admin.Services
             var errorResponse = await response.Content.ReadFromJsonAsync<ErrorResponse>();
             return new LoginResult { Success = false, Message = errorResponse?.Message ?? "Login failed. Please try again." };
         }
+        public async Task<bool> CheckLoginStatus()
+        {
+            // Check if a token exists in localStorage, indicating a logged-in user
+            var token = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "token");
+            if (!string.IsNullOrEmpty(token))
+            {
+                var roles = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "roles");
+                var rolesList = roles?.Split(',').ToList() ?? new List<string>();
+                _authStateService.IsLoggedIn = true;
+                _authStateService.Roles = rolesList;
+                return true;
+            }
+            return false;
+        }
+
 
         public async Task LogoutAsync()
         {

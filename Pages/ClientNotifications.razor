@@ -1,68 +1,136 @@
 ﻿@page "/notifications"
-@using MidProject.Models.Dto.Request2;
+@using MidProject.Models.Dto.Request2
 @using MidProject.Models.Dto.Response
-@using Admin.Services
-@using Admin.Dto_s
 @inject Admin.Services.AdminService AdminService
 
 @code {
-    [Parameter]
-    public int ClientId { get; set; }
-
-    private List<NotificationBlazorDto> notifications;
-    private NotificationDto newNotification = new NotificationDto();
-
-    protected override async Task OnInitializedAsync()
-    {
-        notifications = await AdminService.GetClientNotificationsAsync(ClientId);
-    }
-
-    private async Task AddNotification()
-    {
-        if (string.IsNullOrWhiteSpace(newNotification.Message))
+    private NotificationDto newNotification = new NotificationDto
         {
-            return; 
+            Date = DateTime.Now // Set default date to the current time
+        };
+
+    private string feedbackMessage;
+    private string feedbackClass;
+
+    private async Task AddNotificationForAllClients()
+    {
+        if (string.IsNullOrWhiteSpace(newNotification.Title) || string.IsNullOrWhiteSpace(newNotification.Message))
+        {
+            return; // Do nothing if either title or message is empty
         }
 
-        newNotification.ClientId = ClientId;
-        await AdminService.AddNotificationAsync(newNotification);
-        notifications = await AdminService.GetClientNotificationsAsync(ClientId);
-        newNotification = new NotificationDto(); 
+        try
+        {
+            // Sending notification to all clients
+            await AdminService.AddNotificationForAllClientsAsync(newNotification);
+            newNotification = new NotificationDto { Date = DateTime.Now }; // Reset the notification input
+            feedbackMessage = "Notification sent to all clients successfully!";
+            feedbackClass = "alert-success"; // Bootstrap success alert class
+        }
+        catch (Exception ex)
+        {
+            feedbackMessage = $"Failed to send notification: {ex.Message}";
+            feedbackClass = "alert-danger"; // Bootstrap error alert class
+        }
     }
 }
 
-<h3>Notifications for Client @ClientId</h3>
+<h3>Send Notification to All Clients</h3>
 
-<h4>Add New Notification</h4>
-<input @bind="newNotification.Message" placeholder="Enter notification message" />
-<button @onclick="AddNotification">Add Notification</button>
+<div class="notification-form">
+    <h4>Create a New Notification</h4>
+    <div class="form-group">
+        <label for="title">Title:</label>
+        <input id="title" @bind="newNotification.Title" class="form-control" placeholder="Enter notification title" />
+    </div>
+    <div class="form-group">
+        <label for="message">Message:</label>
+        <textarea id="message" @bind="newNotification.Message" class="form-control" placeholder="Enter notification message" rows="4"></textarea>
+    </div>
+    <div class="form-group">
+        <label for="date">Date:</label>
+        <input id="date" type="datetime-local" @bind="newNotification.Date" class="form-control" />
+    </div>
+    <div class="form-group">
+        <button @onclick="AddNotificationForAllClients" class="btn btn-primary">Send Notification</button>
+    </div>
+</div>
 
-<h4>Existing Notifications</h4>
-<table class="table">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Message</th>
-            <th>Created At</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (notifications == null)
-        {
-            <tr>
-                <td colspan="3">Loading...</td>
-            </tr>
+<!-- Feedback Messages -->
+@if (!string.IsNullOrEmpty(feedbackMessage))
+{
+    <div class="alert @feedbackClass alert-dismissible fade show" role="alert">
+        @feedbackMessage
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+
+<style>
+    .notification-form {
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+        .btn:hover {
+            background-color: #0056b3;
         }
-        else
-        {
-            @foreach (var notification in notifications)
-            {
-                <tr>
-                    <td>@notification.NotificationId</td>
-                    <td>@notification.Message</td>
 
-                </tr>
-            }
-        }
-    </tbody>
-</table>
+    label {
+        font-weight: bold;
+    }
+
+    h3 {
+        text-align: center;
+        color: #333;
+    }
+
+    h4 {
+        margin-top: 0;
+    }
+
+    .alert {
+        margin-top: 20px;
+    }
+
+    .alert-success {
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+        color: #155724;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+        color: #721c24;
+    }
+
+    .close {
+        color: inherit;
+    }
+</style>
