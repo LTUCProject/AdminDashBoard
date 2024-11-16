@@ -2,43 +2,57 @@
 @using Admin.Dto_s
 @using Admin.Services
 @inject Admin.Services.AdminService AdminService
+@inject IJSRuntime JSRuntime // Injecting IJSRuntime for JS interop
 
-@code {
-    private List<AllProviderBlazorDto> providers;
+<h3 class="page-title">Providers List</h3>
 
-    protected override async Task OnInitializedAsync()
-    {
-        providers = await AdminService.GetAllProvidersAsync();
-    }
+<!-- Provider Counts Section -->
+<div class="provider-count-container mb-4">
+    <h4>Total Providers: <span class="provider-count">@providers?.Count </span></h4>
+    <h5>Owner Providers: <span class="provider-count">@ownerCount</span></h5>
+    <h5>Servicer Providers: <span class="provider-count">@servicerCount</span></h5>
+</div>
 
-    private async Task DeleteProvider(int id)
-    {
-        await AdminService.DeleteProviderAsync(id);
-        providers = await AdminService.GetAllProvidersAsync(); 
-    }
+<!-- Search Bar -->
+<div class="search-bar mb-3">
+    <input @bind="searchQuery" class="form-control search-input" placeholder="Search by name or email..." @oninput="FilterProviders" />
+</div>
+
+<!-- Feedback Message (Success/Error) -->
+@if (!string.IsNullOrEmpty(feedbackMessage))
+{
+    <div class="alert @feedbackClass alert-dismissible fade show" role="alert">
+        @feedbackMessage
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
 }
 
-<h3>Providers List</h3>
-<table class="table">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Type</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (providers == null)
-        {
+<!-- Owner Providers Table -->
+<h4>Owner Providers</h4>
+@if (ownerProviders == null)
+{
+    <p><em>Loading...</em><div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div></p>
+}
+else if (ownerProviders.Count == 0)
+{
+    <p>No Owner providers found.</p>
+}
+else
+{
+    <table class="table provider-table">
+        <thead>
             <tr>
-                <td colspan="5">Loading...</td>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Type</th>
+                <th>Actions</th>
             </tr>
-        }
-        else
-        {
-            @foreach (var provider in providers)
+        </thead>
+        <tbody>
+            @foreach (var provider in ownerProviders)
             {
                 <tr>
                     <td>@provider.ProviderId</td>
@@ -46,12 +60,215 @@
                     <td>@provider.Email</td>
                     <td>@provider.Type</td>
                     <td>
-                        <button @onclick="() => DeleteProvider(provider.ProviderId)" class="btn btn-danger">
+                        <button class="btn btn-danger delete-btn" @onclick="() => DeleteProvider(provider.ProviderId)">
                             Delete
                         </button>
                     </td>
                 </tr>
             }
+        </tbody>
+    </table>
+}
+
+<!-- Servicer Providers Table -->
+<h4>Servicer Providers</h4>
+@if (servicerProviders == null)
+{
+    <p><em>Loading...</em><div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div></p>
+}
+else if (servicerProviders.Count == 0)
+{
+    <p>No Servicer providers found.</p>
+}
+else
+{
+    <table class="table provider-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Type</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var provider in servicerProviders)
+            {
+                <tr>
+                    <td>@provider.ProviderId</td>
+                    <td>@provider.Name</td>
+                    <td>@provider.Email</td>
+                    <td>@provider.Type</td>
+                    <td>
+                        <button class="btn btn-danger delete-btn" @onclick="() => DeleteProvider(provider.ProviderId)">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<AllProviderBlazorDto> providers;
+    private List<AllProviderBlazorDto> ownerProviders;
+    private List<AllProviderBlazorDto> servicerProviders;
+    private int ownerCount;
+    private int servicerCount;
+    private string searchQuery = "";
+    private string feedbackMessage;
+    private string feedbackClass;
+
+    protected override async Task OnInitializedAsync()
+    {
+        providers = await AdminService.GetAllProvidersAsync();
+        FilterProviders(); // Initial filtering
+    }
+
+    // Method to filter the provider list based on the search query
+    private void FilterProviders()
+    {
+        // Filter providers by the search query and type
+        var filteredList = string.IsNullOrWhiteSpace(searchQuery)
+            ? providers
+            : providers.Where(provider =>
+                provider.Name.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                provider.Email.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)).ToList();
+
+        ownerProviders = filteredList.Where(provider => provider.Type == "Owner").ToList();
+        servicerProviders = filteredList.Where(provider => provider.Type == "Servicer").ToList();
+
+        // Count the number of Owner and Servicer providers
+        ownerCount = ownerProviders.Count;
+        servicerCount = servicerProviders.Count;
+    }
+
+    private async Task DeleteProvider(int providerId)
+    {
+        var confirmed = await JSRuntime.InvokeAsync<bool>("confirm", new[] { "Are you sure you want to delete this provider?" });
+
+        if (confirmed)
+        {
+            try
+            {
+                await AdminService.DeleteProviderAsync(providerId);
+                providers = await AdminService.GetAllProvidersAsync(); // Refresh the provider list
+                FilterProviders(); // Apply filter again to update the counts and lists
+                feedbackMessage = "Provider deleted successfully!";
+                feedbackClass = "alert-success";
+            }
+            catch (Exception ex)
+            {
+                feedbackMessage = $"Failed to delete provider: {ex.Message}";
+                feedbackClass = "alert-danger";
+            }
         }
-    </tbody>
-</table>
+    }
+}
+
+<style>
+    /* Global Styles */
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f8f9fa;
+    }
+
+    /* Page Title */
+    .page-title {
+        font-size: 24px;
+        font-weight: bold;
+        color: #343a40;
+        margin-top: 30px;
+        margin-bottom: 15px;
+    }
+
+    /* Provider Count Section */
+    .provider-count-container {
+        background-color: #e9ecef;
+        padding: 15px;
+        border-radius: 5px;
+    }
+
+    .provider-count {
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    /* Search Bar */
+    .search-bar {
+        max-width: 300px;
+        margin: 20px auto;
+    }
+
+    .search-input {
+        font-size: 14px;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ced4da;
+    }
+
+    /* Providers Table */
+    .provider-table {
+        width: 100%;
+        margin-top: 20px;
+        background-color: #fff;
+        border-collapse: collapse;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+        .provider-table th, .provider-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .provider-table th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .provider-table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .provider-table td button {
+            width: 100px;
+        }
+
+    /* Buttons */
+    .delete-btn {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+
+    /* Feedback Message */
+    .alert {
+        max-width: 500px;
+        margin: 10px auto;
+        padding: 15px;
+        font-size: 16px;
+        border-radius: 5px;
+    }
+
+        .alert .close {
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+    .spinner-border {
+        margin-top: 20px;
+    }
+</style>

@@ -4,24 +4,14 @@
 @using Admin.Dto_s
 @inject Admin.Services.AdminService AdminService
 
-@code {
-    private List<VehicleBlazorDto> vehicles; 
+<h3 class="text-center">Vehicles Management</h3>
 
-    protected override async Task OnInitializedAsync()
-    {
-        vehicles = await AdminService.GetAllVehiclesAsync();
-    }
+<!-- Total Vehicles Count Section -->
+<div class="vehicle-count-container mb-4 text-center">
+    <h4>Total Vehicles: <span class="vehicle-count">@vehicles?.Count</span></h4>
+</div>
 
-    private async Task DeleteVehicle(int id)
-    {
-        await AdminService.DeleteVehicleAsync(id);
-        vehicles = await AdminService.GetAllVehiclesAsync();
-    }
-}
-
-<h3>Vehicles</h3>
-
-<table class="table">
+<table class="table table-striped table-hover">
     <thead>
         <tr>
             <th>ID</th>
@@ -38,7 +28,13 @@
         @if (vehicles == null)
         {
             <tr>
-                <td colspan="8">Loading...</td>
+                <td colspan="8" class="text-center">Loading...</td>
+            </tr>
+        }
+        else if (!vehicles.Any())
+        {
+            <tr>
+                <td colspan="8" class="text-center">No vehicles found.</td>
             </tr>
         }
         else
@@ -54,10 +50,66 @@
                     <td>@vehicle.ElectricType</td>
                     <td>@vehicle.ClientId</td>
                     <td>
-                        <button @onclick="() => DeleteVehicle(vehicle.VehicleId)">Delete</button>
+                        <button @onclick="() => DeleteVehicle(vehicle.VehicleId)" class="btn btn-danger btn-sm">Delete</button>
                     </td>
                 </tr>
             }
         }
     </tbody>
 </table>
+
+@code {
+    private List<VehicleBlazorDto> vehicles;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadVehicles();
+    }
+
+    private async Task LoadVehicles()
+    {
+        vehicles = await AdminService.GetAllVehiclesAsync();
+    }
+
+    private async Task DeleteVehicle(int id)
+    {
+        await AdminService.DeleteVehicleAsync(id);
+        await LoadVehicles(); // Refresh list after deletion
+    }
+}
+
+<style>
+    .vehicle-count-container {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+
+    .vehicle-count {
+        font-weight: bold;
+        color: #007bff;
+    }
+
+    h3, h4 {
+        margin-bottom: 10px;
+    }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: #f8f9fa;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #e9ecef;
+    }
+
+    .btn-sm {
+        padding: 5px 10px;
+        font-size: 0.875rem;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+</style>

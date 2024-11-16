@@ -2,13 +2,35 @@
 @using Admin.Services
 @using Admin.Dto_s
 @inject AdminService AdminService
-@inject IJSRuntime JSRuntime // Injecting IJSRuntime
+@inject IJSRuntime JSRuntime // Injecting IJSRuntime for JS interop
 
-<h3>Client List</h3>
+<h3 class="page-title">Client List</h3>
 
+<!-- Client Count Section -->
+<div class="client-count-container mb-4">
+    <h4>Total Clients: <span class="client-count">@clients?.Count</span></h4>
+</div>
+
+<!-- Search Bar -->
+<div class="search-bar mb-3">
+    <input @bind="searchQuery" class="form-control search-input" placeholder="Search by name or email..." @oninput="FilterClients" />
+</div>
+
+<!-- Feedback Message (Success/Error) -->
+@if (!string.IsNullOrEmpty(feedbackMessage))
+{
+    <div class="alert @feedbackClass alert-dismissible fade show" role="alert">
+        @feedbackMessage
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+
+<!-- Client Table -->
 @if (clients == null)
 {
-    <p><em>Loading...</em></p>
+    <p><em>Loading...</em><div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div></p>
 }
 else if (clients.Count == 0)
 {
@@ -16,7 +38,7 @@ else if (clients.Count == 0)
 }
 else
 {
-    <table class="table">
+    <table class="table client-table">
         <thead>
             <tr>
                 <th>Name</th>
@@ -26,14 +48,14 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var client in clients)
+            @foreach (var client in filteredClients)
             {
                 <tr>
                     <td>@client.Name</td>
                     <td>@client.Email</td>
                     <td>@client.AccountId</td>
                     <td>
-                        <button class="btn btn-danger" @onclick="() => DeleteClient(client.ClientId)">Delete</button>
+                        <button class="btn btn-danger delete-btn" @onclick="() => DeleteClient(client.ClientId)">Delete</button>
                     </td>
                 </tr>
             }
@@ -43,21 +65,156 @@ else
 
 @code {
     private List<ClientBlazorDto> clients;
+    private List<ClientBlazorDto> filteredClients;
+    private string searchQuery = "";
+    private string feedbackMessage;
+    private string feedbackClass;
 
     protected override async Task OnInitializedAsync()
     {
         clients = await AdminService.GetAllClientsAsync();
+        filteredClients = clients; // Initialize filteredClients with all clients
+    }
+
+    // Method to filter the client list based on the search query
+    private void FilterClients()
+    {
+        if (string.IsNullOrWhiteSpace(searchQuery))
+        {
+            filteredClients = clients; // Reset to full list if search query is empty
+        }
+        else
+        {
+            filteredClients = clients.Where(client =>
+                client.Name.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                client.Email.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
     }
 
     private async Task DeleteClient(int clientId)
     {
-        // Invoke the confirmation dialog using the injected JSRuntime instance
         var confirmed = await JSRuntime.InvokeAsync<bool>("confirm", new[] { "Are you sure you want to delete this client?" });
 
         if (confirmed)
         {
-            await AdminService.DeleteClientAsync(clientId);
-            clients = await AdminService.GetAllClientsAsync(); // Refresh the client list
+            try
+            {
+                await AdminService.DeleteClientAsync(clientId);
+                clients = await AdminService.GetAllClientsAsync(); // Refresh the client list
+                filteredClients = clients; // Reset filtered list to the full client list
+                feedbackMessage = "Client deleted successfully!";
+                feedbackClass = "alert-success";
+            }
+            catch (Exception ex)
+            {
+                feedbackMessage = $"Failed to delete client: {ex.Message}";
+                feedbackClass = "alert-danger";
+            }
         }
     }
 }
+
+<style>
+    /* Global Styles */
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f8f9fa;
+    }
+
+    /* Page Title */
+    .page-title {
+        font-size: 24px;
+        font-weight: bold;
+        color: #343a40;
+        margin-top: 30px;
+        margin-bottom: 15px;
+    }
+
+    /* Client Count Section */
+    .client-count-container {
+        background-color: #e9ecef;
+        padding: 15px;
+        border-radius: 5px;
+    }
+
+    .client-count {
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    /* Search Bar */
+    .search-bar {
+        max-width: 300px;
+        margin: 20px auto;
+    }
+
+    .search-input {
+        font-size: 14px;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ced4da;
+    }
+
+    /* Client Table */
+    .client-table {
+        width: 100%;
+        margin-top: 20px;
+        background-color: #fff;
+        border-collapse: collapse;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .client-table th, .client-table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .client-table th {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .client-table tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .client-table td button {
+        width: 100px;
+    }
+
+    /* Buttons */
+    .delete-btn {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .delete-btn:hover {
+        background-color: #c82333;
+    }
+
+    /* Feedback Message */
+    .alert {
+        max-width: 500px;
+        margin: 10px auto;
+        padding: 15px;
+        font-size: 16px;
+        border-radius: 5px;
+    }
+
+    .alert .close {
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    .spinner-border {
+        margin-top: 20px;
+    }
+</style>

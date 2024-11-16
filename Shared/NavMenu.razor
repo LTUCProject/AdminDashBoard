@@ -3,12 +3,14 @@
 
 <div class="@NavMenuCssClass navbar-collapse custom-collapse" id="navbarNav">
     <nav class="nav flex-column flex-lg-row p-3">
+        <!-- Home Link -->
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
                 <span class="oi oi-home" aria-hidden="true"></span> Home
             </NavLink>
         </div>
 
+        <!-- Admin-Specific Links -->
         @if (_isAdmin)
         {
             <div class="nav-item px-3">
@@ -50,22 +52,75 @@
     </nav>
 </div>
 
+<style>
+    /* General Navigation Menu Styles */
+    nav {
+        display: flex;
+        flex-direction: column;
+        background-color: #343a40;
+        color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+        nav .nav-item {
+            padding: 10px;
+        }
+
+    .nav-link {
+        color: #f8f9fa;
+        font-size: 1rem;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        padding: 8px 12px;
+        border-radius: 4px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+        .nav-link:hover {
+            background-color: #495057;
+            color: #ffffff;
+        }
+
+        .nav-link .oi {
+            margin-right: 8px;
+            font-size: 1.25rem;
+        }
+
+    .custom-collapse {
+        margin: 10px 0;
+    }
+
+    /* Styling for collapsed state of navbar */
+    .collapse {
+        display: none;
+    }
+
+    .navbar-collapse.show {
+        display: flex;
+    }
+
+</style>
+
 @code {
     private bool _isAdmin;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    // Ensure the correct login state and roles are initialized.
+    protected override async Task OnInitializedAsync()
     {
-        if (firstRender)
-        {
-            _isAdmin = await AuthService.IsAdmin();
-            StateHasChanged(); // Request re-render
-        }
+        var isLoggedIn = await AuthService.CheckLoginStatus();
+        _isAdmin = isLoggedIn && await AuthService.IsAdmin();
+        StateHasChanged(); // Re-render after state changes
     }
 
+    // Track the collapse state of the navigation menu
     private bool _collapseNavMenu = true;
 
+    // CSS class to toggle collapse state
     private string NavMenuCssClass => _collapseNavMenu ? "collapse navbar-collapse" : "navbar-collapse show";
 
+    // Method to toggle collapse state when menu button is clicked
     private void ToggleNavMenu()
     {
         _collapseNavMenu = !_collapseNavMenu;
