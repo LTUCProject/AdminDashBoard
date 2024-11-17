@@ -1,89 +1,108 @@
 ﻿@page "/subscriptions"
-@using MidProject.Models.Dto.Request
-@using MidProject.Models.Dto.Response
 @using Admin.Services
 @using Admin.Dto_s
 @inject Admin.Services.AdminService AdminService
 
-<div class="container mt-5">
-    <h2 class="text-center mb-4">Manage Subscription Plans</h2>
+<h3>Client Subscriptions</h3>
 
-    <div class="row">
-        <div class="col-md-6">
-            <h3>Create Subscription Plan</h3>
-            <EditForm Model="newSubscriptionPlan" OnValidSubmit="HandleValidSubmit">
-                <DataAnnotationsValidator />
-                <ValidationSummary />
-
-                <div class="form-group mb-3">
-                    <label for="Name" class="form-label">Plan Name</label>
-                    <InputText id="Name" class="form-control" @bind-Value="newSubscriptionPlan.Name" placeholder="Enter plan name" />
-                </div>
-                <div class="form-group mb-3">
-                    <label for="Description" class="form-label">Description</label>
-                    <InputTextArea id="Description" class="form-control" @bind-Value="newSubscriptionPlan.Description" placeholder="Enter plan description" rows="3" />
-                </div>
-                <div class="form-group mb-3">
-                    <label for="Price" class="form-label">Price ($)</label>
-                    <InputNumber id="Price" class="form-control" @bind-Value="newSubscriptionPlan.Price" placeholder="Enter price" />
-                </div>
-                <div class="form-group mb-3">
-                    <label for="DurationInDays" class="form-label">Duration (Days)</label>
-                    <InputNumber id="DurationInDays" class="form-control" @bind-Value="newSubscriptionPlan.DurationInDays" placeholder="Enter duration in days" />
-                </div>
-
-                <button type="submit" class="btn btn-primary">Create Plan</button>
-            </EditForm>
+<!-- Subscription Counts -->
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Total Subscriptions</h5>
+                <p class="card-text">@totalSubscriptions</p>
+            </div>
         </div>
-
-        <div class="col-md-6">
-            <h3>Current Subscription Plans</h3>
-            <div class="list-group">
-                @if (subscriptionPlans == null)
-                {
-                    <p><em>Loading subscription plans...</em></p>
-                }
-                else if (!subscriptionPlans.Any())
-                {
-                    <p>No subscription plans available.</p>
-                }
-                else
-                {
-                    @foreach (var plan in subscriptionPlans)
-                    {
-                        <div class="list-group-item">
-                            <h5>@plan.Name</h5>
-                            <p>@plan.Description</p>
-                            <p><strong>Price:</strong> $@plan.Price | <strong>Duration:</strong> @plan.DurationInDays days</p>
-                                    <button class="btn btn-danger btn-sm" @onclick="() => DeleteSubscriptionPlan(plan.SubscriptionPlanId)">Delete</button>
-                        </div>
-                    }
-                }
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Active Subscriptions</h5>
+                <p class="card-text">@activeSubscriptions</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Expired Subscriptions</h5>
+                <p class="card-text">@expiredSubscriptions</p>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Subscription List Table -->
+@if (clientSubscriptions == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <table class="table mt-3">
+        <thead>
+            <tr>
+                <th>Subscription ID</th>
+                <th>Client Name</th>
+                <th>Subscription Plan Name</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var subscription in clientSubscriptions)
+            {
+                <tr>
+                    <td>@subscription.ClientSubscriptionId</td>
+                    <td>@subscription.ClientName</td>
+                    <td>@subscription.SubscriptionPlanName</td>
+                    <td>@subscription.SubscriptionPlanDescription</td>
+                    <td>@subscription.Price</td>
+                    <td>@subscription.StartDate.ToShortDateString()</td>
+                    <td>@subscription.EndDate.ToShortDateString()</td>
+                    <td>@subscription.Status</td>
+                    <td>
+                        <button class="btn btn-danger" @onclick="() => DeleteClientSubscription(subscription.ClientSubscriptionId)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<!-- Add Subscription Button (if needed in the future) -->
+<!-- <button class="btn btn-primary mt-3" @onclick="ShowCreateSubscriptionModal">Add Subscription</button> -->
 @code {
-    private SubscriptionPlanDto newSubscriptionPlan = new SubscriptionPlanDto();
-    private List<SubscriptionPlanBlazorDto> subscriptionPlans;
+    private List<ClientSubscriptionBlazorDto> clientSubscriptions;
+    private int totalSubscriptions;
+    private int activeSubscriptions;
+    private int expiredSubscriptions;
 
     protected override async Task OnInitializedAsync()
     {
-        subscriptionPlans = await AdminService.GetAllSubscriptionPlansAsync();
+        await LoadSubscriptions();
     }
 
-    private async Task HandleValidSubmit()
+    private async Task LoadSubscriptions()
     {
-        await AdminService.CreateSubscriptionPlanAsync(newSubscriptionPlan);
-        newSubscriptionPlan = new SubscriptionPlanDto(); // Reset the form
-        subscriptionPlans = await AdminService.GetAllSubscriptionPlansAsync(); // Refresh the list
+        // Fetch all client subscriptions from the service
+        clientSubscriptions = await AdminService.GetAllClientSubscriptionsAsync();
+
+        // Calculate subscription stats
+        totalSubscriptions = clientSubscriptions.Count;
+        activeSubscriptions = clientSubscriptions.Count(s => s.Status == "Active");
+        expiredSubscriptions = clientSubscriptions.Count(s => s.Status == "Expired");
     }
 
-    private async Task DeleteSubscriptionPlan(int id)
+    private async Task DeleteClientSubscription(int id)
     {
-        await AdminService.DeleteSubscriptionPlanAsync(id); // Call method without assignment
-        subscriptionPlans = await AdminService.GetAllSubscriptionPlansAsync(); // Refresh the list after deletion
+        // Remove client subscription
+        await AdminService.RemoveClientSubscriptionAsync(id);
+        await LoadSubscriptions(); // Refresh the list after deletion
     }
-
 }
