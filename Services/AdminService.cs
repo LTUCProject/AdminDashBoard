@@ -128,11 +128,28 @@ namespace Admin.Services
             return await _httpClient.GetFromJsonAsync<List<ClientSubscriptionResponseDto>>($"api/Admins/Clients/{clientId}/Subscriptions");
         }
 
+        //SubscriptionPlan Services//
+
+
+
+        // ClientSubscription Services //
+        public async Task<List<ClientSubscriptionBlazorDto>> GetAllClientSubscriptionsAsync()
+        {
+            await AddAuthorizationHeader();  // Ensure authorization header is added
+
+            // Call the API to get all client subscriptions
+            var response = await _httpClient.GetFromJsonAsync<ClientSubscriptionBlazorWrapper>("api/Admins/ClientSubscriptions");
+
+            // Return the list of client subscriptions or an empty list if the response is null
+            return response?.Values ?? new List<ClientSubscriptionBlazorDto>();
+        }
+
         public async Task RemoveClientSubscriptionAsync(int clientSubscriptionId)
         {
-            await _httpClient.DeleteAsync($"api/Admins/Subscriptions/{clientSubscriptionId}");
+            await _httpClient.DeleteAsync($"api/Admin/ClientSubscriptions/{clientSubscriptionId}");
         }
-        //SubscriptionPlan Services//
+        // ClientSubscription Services //
+
 
 
         //Notification Services//

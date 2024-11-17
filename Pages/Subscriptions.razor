@@ -1,0 +1,89 @@
+﻿@page "/subscriptionplans"
+@using MidProject.Models.Dto.Request
+@using MidProject.Models.Dto.Response
+@using Admin.Services
+@using Admin.Dto_s
+@inject Admin.Services.AdminService AdminService
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Manage Subscription Plans</h2>
+
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Create Subscription Plan</h3>
+            <EditForm Model="newSubscriptionPlan" OnValidSubmit="HandleValidSubmit">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="form-group mb-3">
+                    <label for="Name" class="form-label">Plan Name</label>
+                    <InputText id="Name" class="form-control" @bind-Value="newSubscriptionPlan.Name" placeholder="Enter plan name" />
+                </div>
+                <div class="form-group mb-3">
+                    <label for="Description" class="form-label">Description</label>
+                    <InputTextArea id="Description" class="form-control" @bind-Value="newSubscriptionPlan.Description" placeholder="Enter plan description" rows="3" />
+                </div>
+                <div class="form-group mb-3">
+                    <label for="Price" class="form-label">Price ($)</label>
+                    <InputNumber id="Price" class="form-control" @bind-Value="newSubscriptionPlan.Price" placeholder="Enter price" />
+                </div>
+                <div class="form-group mb-3">
+                    <label for="DurationInDays" class="form-label">Duration (Days)</label>
+                    <InputNumber id="DurationInDays" class="form-control" @bind-Value="newSubscriptionPlan.DurationInDays" placeholder="Enter duration in days" />
+                </div>
+
+                <button type="submit" class="btn btn-primary">Create Plan</button>
+            </EditForm>
+        </div>
+
+        <div class="col-md-6">
+            <h3>Current Subscription Plans</h3>
+            <div class="list-group">
+                @if (subscriptionPlans == null)
+                {
+                    <p><em>Loading subscription plans...</em></p>
+                }
+                else if (!subscriptionPlans.Any())
+                {
+                    <p>No subscription plans available.</p>
+                }
+                else
+                {
+                    @foreach (var plan in subscriptionPlans)
+                    {
+                        <div class="list-group-item">
+                            <h5>@plan.Name</h5>
+                            <p>@plan.Description</p>
+                            <p><strong>Price:</strong> $@plan.Price | <strong>Duration:</strong> @plan.DurationInDays days</p>
+                                    <button class="btn btn-danger btn-sm" @onclick="() => DeleteSubscriptionPlan(plan.SubscriptionPlanId)">Delete</button>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private SubscriptionPlanDto newSubscriptionPlan = new SubscriptionPlanDto();
+    private List<SubscriptionPlanBlazorDto> subscriptionPlans;
+
+    protected override async Task OnInitializedAsync()
+    {
+        subscriptionPlans = await AdminService.GetAllSubscriptionPlansAsync();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await AdminService.CreateSubscriptionPlanAsync(newSubscriptionPlan);
+        newSubscriptionPlan = new SubscriptionPlanDto(); // Reset the form
+        subscriptionPlans = await AdminService.GetAllSubscriptionPlansAsync(); // Refresh the list
+    }
+
+    private async Task DeleteSubscriptionPlan(int id)
+    {
+        await AdminService.DeleteSubscriptionPlanAsync(id); // Call method without assignment
+        subscriptionPlans = await AdminService.GetAllSubscriptionPlansAsync(); // Refresh the list after deletion
+    }
+
+}
