@@ -48,6 +48,51 @@
         font-weight: 300;
     }
 
+/* Quick Stats Section */
+.quick-stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 50px;
+}
+
+.stats-card {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 22%;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .stats-card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .stats-card h3 {
+        font-size: 1.5rem;
+        color: #343a40;
+        margin-bottom: 15px;
+    }
+
+.stats-number {
+    font-size: 2.5rem;
+    color: #007bff;
+    margin-bottom: 20px;
+}
+
+.stats-card a {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+    .stats-card a:hover {
+        background-color: #0056b3;
+    }
 
 /* Features Section */
 .features {
@@ -104,10 +149,10 @@
     .features strong {
         color: #0056b3;
         font-weight: bold;
-    }
+        /* Login Section */
+        .login-container
 
-/* Login Section */
-.login-container {
+{
     text-align: center;
     padding: 30px;
     margin-top: 50px;
@@ -117,17 +162,18 @@
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-    .login-container:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-    }
+.login-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
 
-    .login-container h2 {
-        font-size: 2rem;
-        color: #212529;
-        margin-bottom: 20px;
-    }
+.login-container h2 {
+    font-size: 2rem;
+    color: #212529;
+    margin-bottom: 20px;
+}
 
+/* Buttons */
 .btn-primary {
     display: inline-block;
     padding: 15px 30px;
@@ -152,3 +198,32 @@
         transform: translateY(0);
         box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
     }
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    .quick-stats {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .stats-card {
+        width: 80%;
+        margin-bottom: 20px;
+    }
+
+    .dashboard-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .features h2 {
+        font-size: 2rem;
+    }
+
+    .features ul {
+        font-size: 1.1rem;
+    }
+
+    .features li::before {
+        font-size: 1.4rem;
+    }
+}

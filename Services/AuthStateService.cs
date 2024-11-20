@@ -27,8 +27,6 @@ namespace Admin.Services
         }
 
 
-
-
         public List<string> Roles
         {
             get => _roles;

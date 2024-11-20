@@ -62,20 +62,32 @@
 
 @code {
     private List<VehicleBlazorDto> vehicles;
+    private bool isPrerenderingComplete = false;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await LoadVehicles();
+        if (firstRender)
+        {
+            isPrerenderingComplete = true;
+            await LoadVehicles();
+            StateHasChanged(); // Trigger re-render
+        }
     }
 
     private async Task LoadVehicles()
     {
-        vehicles = await AdminService.GetAllVehiclesAsync();
+        if (isPrerenderingComplete)
+        {
+            vehicles = await AdminService.GetAllVehiclesAsync();
+        }
     }
 
     private async Task DeleteVehicle(int id)
     {
-        await AdminService.DeleteVehicleAsync(id);
-        await LoadVehicles(); // Refresh list after deletion
+        if (isPrerenderingComplete)
+        {
+            await AdminService.DeleteVehicleAsync(id);
+            await LoadVehicles(); // Refresh list after deletion
+        }
     }
 }

@@ -132,24 +132,39 @@ else
     private List<ChargingStationBlazorDto> inactiveStations;
     private int activeCount;
     private int inactiveCount;
+    private bool isPrerenderingComplete = false;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await LoadChargingStations();
-        FilterStations(); // Initial sorting and counting
+        if (firstRender)
+        {
+            isPrerenderingComplete = true;
+            await LoadChargingStations(); // Load data after prerendering
+            StateHasChanged(); // Trigger a re-render
+        }
     }
 
     private async Task LoadChargingStations()
     {
-        chargingStations = (await AdminService.GetAllChargingStationsAsync()).ToList();
-        FilterStations(); // Apply sorting and filtering after loading
+        if (isPrerenderingComplete)
+        {
+            try
+            {
+                chargingStations = (await AdminService.GetAllChargingStationsAsync()).ToList();
+                FilterStations(); // Apply sorting and filtering after loading
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading charging stations: {ex.Message}");
+            }
+        }
     }
 
     private void FilterStations()
     {
         // Sort the charging stations into active and inactive based on status
-        activeStations = chargingStations.Where(station => station.Status == "Active").ToList();
-        inactiveStations = chargingStations.Where(station => station.Status == "Inactive").ToList();
+        activeStations = chargingStations?.Where(station => station.Status == "Active").ToList() ?? new List<ChargingStationBlazorDto>();
+        inactiveStations = chargingStations?.Where(station => station.Status == "Inactive").ToList() ?? new List<ChargingStationBlazorDto>();
 
         // Count the number of Active and Inactive stations
         activeCount = activeStations.Count;
@@ -158,11 +173,21 @@ else
 
     private async Task ConfirmDelete(int id)
     {
-        bool confirmed = await ShowDeleteConfirmation();
-        if (confirmed)
+        if (isPrerenderingComplete)
         {
-            await AdminService.DeleteChargingStationAsync(id);
-            await LoadChargingStations(); // Refresh the list after deletion
+            bool confirmed = await ShowDeleteConfirmation();
+            if (confirmed)
+            {
+                try
+                {
+                    await AdminService.DeleteChargingStationAsync(id);
+                    await LoadChargingStations(); // Refresh the list after deletion
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error deleting charging station: {ex.Message}");
+                }
+            }
         }
     }
 
