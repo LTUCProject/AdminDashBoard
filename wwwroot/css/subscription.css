@@ -1,0 +1,208 @@
+﻿/* Global Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f7f9fc;
+    color: #495057;
+    margin: 0;
+    padding: 0;
+}
+
+h2, h3 {
+    font-weight: 700;
+    color: #343a40;
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 2rem;
+}
+
+h3 {
+    font-size: 1.5rem;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+}
+
+/* Container for page content */
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 30px;
+}
+
+/* Form Styling */
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #495057;
+}
+
+input[type="text"], input[type="number"], textarea {
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 12px;
+    width: 100%;
+    background-color: #fff;
+    transition: border-color 0.3s ease;
+}
+
+    input[type="text"]:focus, input[type="number"]:focus, textarea:focus {
+        border-color: #007bff;
+        outline: none;
+    }
+
+textarea {
+    resize: vertical;
+}
+
+/* Submit Button */
+button[type="submit"] {
+    font-size: 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+    button[type="submit"]:hover {
+        background-color: #0056b3;
+        transform: translateY(-2px);
+    }
+
+    button[type="submit"]:active {
+        background-color: #004085;
+        transform: translateY(2px);
+    }
+
+/* List Group (Subscription Plans) */
+.list-group {
+    margin-top: 30px;
+    padding-left: 0;
+    list-style: none;
+}
+
+.list-group-item {
+    padding: 20px;
+    margin-bottom: 15px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+    .list-group-item:hover {
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+    }
+
+    .list-group-item h5 {
+        font-size: 1.25rem;
+        color: #007bff;
+    }
+
+    .list-group-item p {
+        font-size: 1rem;
+        color: #495057;
+    }
+
+    .list-group-item button {
+        font-size: 0.9rem;
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+        .list-group-item button:hover {
+            background-color: #c82333;
+            transform: translateY(-2px);
+        }
+
+        .list-group-item button:active {
+            background-color: #bd2130;
+            transform: translateY(2px);
+        }
+
+/* Loading and No Plans State */
+p {
+    text-align: center;
+    font-size: 1.1rem;
+    color: #007bff;
+    font-weight: 600;
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+    .container {
+        padding: 20px;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    h3 {
+        font-size: 1.4rem;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .list-group-item {
+        padding: 15px;
+    }
+
+    button[type="submit"] {
+        width: 100%;
+    }
+
+    .list-group-item button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+
+    h2 {
+        font-size: 1.6rem;
+    }
+
+    h3 {
+        font-size: 1.3rem;
+    }
+
+    .col-md-6 {
+        flex: 1;
+        min-width: 100%;
+    }
+
+    .form-group {
+        margin-bottom: 12px;
+    }
+
+    .list-group-item {
+        padding: 12px;
+    }
+
+    button[type="submit"] {
+        padding: 10px 18px;
+    }
+
+    .list-group-item button {
+        padding: 6px 12px;
+    }
+}

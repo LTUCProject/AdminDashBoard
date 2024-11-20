@@ -1,0 +1,130 @@
+﻿/* General Styles */
+body {
+    font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f3f4f6; /* Light background color for a clean look */
+    color: #333; /* Standard text color */
+    line-height: 1.6; /* Increased line-height for readability */
+    max-width : 1500px;
+}
+
+/* Login Page Styling */
+.login-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Full height of viewport */
+    background: linear-gradient(135deg, #007bff, #6610f2); /* Gradient background */
+    color: #fff; /* White text for contrast */
+    padding: 40px;
+    max-width: 1500px;
+    border-radius: 12px; /* Rounded corners for a modern look */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15); /* Subtle shadow */
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effect */
+}
+
+    .login-container:hover {
+        transform: scale(1.02); /* Slightly scale on hover */
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2); /* Deeper shadow on hover */
+    }
+
+    .login-container h3 {
+        font-size: 2.5rem; /* Large heading size */
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: #f8f9fa; /* Light color for headings */
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Subtle text shadow for depth */
+    }
+
+/* Alert Styles (for errors/warnings) */
+.alert-danger {
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    background-color: #f8d7da; /* Light red background */
+    color: #721c24; /* Dark red text */
+    padding: 15px;
+    border-radius: 6px; /* Rounded corners */
+    border-left: 5px solid #f5c6cb; /* Left border for emphasis */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+}
+
+/* Form Styles */
+.login-form {
+    width: 100%;
+    max-width: 1500px;
+    padding: 30px;
+    background-color: #ffffff; /* White background for form */
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); /* Light shadow around the form */
+    transition: transform 0.3s ease; /* Smooth hover transition */
+}
+
+    .login-form:hover {
+        transform: scale(1.01); /* Slight scale on hover for a dynamic effect */
+    }
+
+/* Form Field Group */
+.form-group {
+    margin-bottom: 25px; /* Spacing between form elements */
+}
+
+/* Form Label */
+.form-label {
+    display: block;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #495057; /* Dark gray color for labels */
+}
+
+/* Form Control Input */
+.form-control {
+    width: 100%;
+    max-width: 1500px;
+    padding: 12px;
+    font-size: 1rem;
+    color: #495057;
+    background-color: #f8f9fa; /* Light background */
+    border: 1px solid #ced4da; /* Border with light gray */
+    border-radius: 6px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth focus effect */
+}
+
+    /* Focused Input Styling */
+    .form-control:focus {
+        outline: none;
+        border-color: #007bff; /* Blue border on focus */
+        box-shadow: 0 0 6px rgba(0, 123, 255, 0.5); /* Subtle blue shadow */
+    }
+
+/* Button Styles */
+.btn-primary {
+    display: inline-block;
+    width: 100%; /* Full width button */
+    padding: 12px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #ffffff; /* White text */
+    background: linear-gradient(135deg, #007bff, #0056b3); /* Blue gradient background */
+    border: none;
+    border-radius: 8px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15); /* Shadow for depth */
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effects */
+}
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #0056b3, #003f88); /* Darker gradient on hover */
+        transform: translateY(-3px); /* Lift effect on hover */
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); /* Darker shadow on hover */
+    }
+
+    .btn-primary:active {
+        transform: translateY(0); /* Reset the lift when active */
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15); /* Original shadow */
+    }

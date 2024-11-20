@@ -4,6 +4,8 @@
 @using Admin.Dto_s
 @inject Admin.Services.AdminService AdminService
 
+<link href="css/vehicle.css" rel="stylesheet" />
+
 <h3 class="text-center">Vehicles Management</h3>
 
 <!-- Total Vehicles Count Section -->
@@ -77,39 +79,3 @@
         await LoadVehicles(); // Refresh list after deletion
     }
 }
-
-<style>
-    .vehicle-count-container {
-        background-color: #f9f9f9;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        margin-bottom: 20px;
-    }
-
-    .vehicle-count {
-        font-weight: bold;
-        color: #007bff;
-    }
-
-    h3, h4 {
-        margin-bottom: 10px;
-    }
-
-    .table-striped tbody tr:nth-of-type(odd) {
-        background-color: #f8f9fa;
-    }
-
-    .table-hover tbody tr:hover {
-        background-color: #e9ecef;
-    }
-
-    .btn-sm {
-        padding: 5px 10px;
-        font-size: 0.875rem;
-    }
-
-    .text-center {
-        text-align: center;
-    }
-</style>

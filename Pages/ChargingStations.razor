@@ -5,7 +5,9 @@
 @inject Admin.Services.AdminService AdminService
 @inject IJSRuntime JSRuntime // Injecting IJSRuntime for JS interop
 
-<h3 class="text-center">Charging Stations Management</h3>
+<link href="css/chargingstation.css" rel="stylesheet" />
+
+<h3 class="charging-station-count">Charging Stations Management</h3>
 
 <!-- Charging Station Counts Section -->
 <div class="charging-station-count-container mb-4 text-center">
@@ -23,8 +25,8 @@
 else if (!chargingStations.Any())
 {
     <div class="alert alert-warning text-center">
-        <p>No charging stations found.</p>
-        <p>Please refresh the page or check back later.</p>
+        <p class="ap">No charging stations found.</p>
+        <p class="ap">Please refresh the page or check back later.</p>
     </div>
 }
 else
@@ -33,7 +35,7 @@ else
     <h4>Active Charging Stations</h4>
     @if (activeStations == null || !activeStations.Any())
     {
-        <p>No active charging stations found.</p>
+        <p class="ap">No active charging stations found.</p>
     }
     else
     {
@@ -80,7 +82,7 @@ else
     <h4>Inactive Charging Stations</h4>
     @if (inactiveStations == null || !inactiveStations.Any())
     {
-        <p>No inactive charging stations found.</p>
+        <p class="ap">No inactive charging stations found.</p>
     }
     else
     {

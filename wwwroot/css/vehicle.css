@@ -1,0 +1,218 @@
+﻿/* Container Styling for Vehicle Count */
+.vehicle-count-container {
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    margin-bottom: 25px;
+    transition: all 0.3s ease;
+}
+
+    .vehicle-count-container:hover {
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); /* Increased hover shadow for emphasis */
+        transform: translateY(-5px); /* Slight lift effect on hover */
+    }
+
+/* Vehicle Count Text Styling */
+.vehicle-count {
+    font-weight: 700;
+    color: #007bff;
+    font-size: 1.35rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Header Styling */
+h3, h4 {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 600;
+    color: #343a40;
+    margin-bottom: 18px;
+    line-height: 1.4;
+    text-transform: capitalize;
+}
+
+h3 {
+    font-size: 2rem;
+    letter-spacing: 0.5px;
+}
+
+h4 {
+    font-size: 1.75rem;
+}
+
+/* Table Styling */
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f4f6f9; /* Soft light gray for odd rows */
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f1f5f8; /* Subtle hover color for a more refined look */
+    cursor: pointer;
+    transform: scale(1.02); /* Slight scaling effect on hover */
+    transition: transform 0.2s ease;
+}
+
+/* Table Header Styling */
+th {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    color: #6c757d;
+    background-color: #f8f9fa;
+    padding: 12px;
+    text-align: left;
+    border-top: 1px solid #ddd;
+}
+
+/* Button Styling */
+.btn-sm {
+    padding: 8px 14px;
+    font-size: 0.95rem;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+}
+
+    .btn-sm:hover {
+        background-color: #0056b3;
+        transform: translateY(-2px);
+    }
+
+    .btn-sm:active {
+        background-color: #004085;
+        transform: translateY(2px);
+    }
+
+/* Text Alignment */
+.text-center {
+    text-align: center;
+}
+
+/* Global Styling for Body */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #495057;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+/* General Container Styling */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Responsive Design for Small Screens */
+@media (max-width: 768px) {
+    .vehicle-count-container {
+        padding: 18px;
+    }
+
+    .vehicle-count {
+        font-size: 1.2rem;
+    }
+
+    h3 {
+        font-size: 1.75rem;
+    }
+
+    h4 {
+        font-size: 1.5rem;
+    }
+
+    .btn-sm {
+        font-size: 0.85rem;
+        padding: 6px 12px;
+    }
+
+    .table th, .table td {
+        padding: 10px;
+    }
+}
+
+/* Accessibility Enhancements */
+.btn-sm:focus, .table-hover tbody tr:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(38, 143, 255, 0.5);
+}
+
+/* Animation for Table Rows */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.table-hover tbody tr {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Card Hover Effect */
+.card {
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    }
+
+/* Improved Form Elements */
+.form-control {
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    padding: 12px;
+    font-size: 1rem;
+    transition: border 0.3s ease;
+}
+
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 8px rgba(38, 143, 255, 0.2);
+    }
+
+/* Improved Form Labels */
+.form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+    display: block;
+}
+
+/* List Group Styling */
+.list-group-item {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    transition: background-color 0.3s ease;
+}
+
+    .list-group-item:hover {
+        background-color: #f1f5f8;
+        transform: scale(1.02);
+    }
+
+/* Mobile-first Design */
+@media (max-width: 600px) {
+    .vehicle-count-container {
+        padding: 12px;
+    }
+
+    .btn-sm {
+        font-size: 0.75rem;
+        padding: 4px 10px;
+    }
+}

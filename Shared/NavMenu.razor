@@ -1,7 +1,9 @@
 ﻿@using Services
 @inject AuthService AuthService
 
-<div class="@NavMenuCssClass navbar-collapse custom-collapse" id="navbarNav">
+<link href="css/navbar.css" rel="stylesheet" />
+
+<div class="@NavMenuCssClass navbar-collapse custom-collapse scrollable-menu" id="navbarNav">
     <nav class="nav flex-column flex-lg-row p-3">
         <!-- Home Link -->
         <div class="nav-item px-3">
@@ -51,57 +53,6 @@
         }
     </nav>
 </div>
-
-<style>
-    /* General Navigation Menu Styles */
-    nav {
-        display: flex;
-        flex-direction: column;
-        background-color: #343a40;
-        color: #fff;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-        nav .nav-item {
-            padding: 10px;
-        }
-
-    .nav-link {
-        color: #f8f9fa;
-        font-size: 1rem;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        padding: 8px 12px;
-        border-radius: 4px;
-        transition: background-color 0.3s ease, color 0.3s ease;
-    }
-
-        .nav-link:hover {
-            background-color: #495057;
-            color: #ffffff;
-        }
-
-        .nav-link .oi {
-            margin-right: 8px;
-            font-size: 1.25rem;
-        }
-
-    .custom-collapse {
-        margin: 10px 0;
-    }
-
-    /* Styling for collapsed state of navbar */
-    .collapse {
-        display: none;
-    }
-
-    .navbar-collapse.show {
-        display: flex;
-    }
-
-</style>
 
 @code {
     private bool _isAdmin;
