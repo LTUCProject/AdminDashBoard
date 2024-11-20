@@ -1,0 +1,237 @@
+﻿/* Global Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f6f9;
+    color: #495057;
+}
+
+/* Page Title */
+.page-title {
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: #343a40;
+    margin-top: 50px;
+    margin-bottom: 30px;
+    text-align: center;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    line-height: 1.3;
+}
+
+/* Provider Count Section */
+.provider-count-container {
+    display: flex; /* عرض المحتوى أفقيًا */
+    align-items: center; /* محاذاة عمودية للنص */
+    justify-content: space-between; /* توزيع العناصر بالتساوي */
+    background: linear-gradient(120deg, #e3f2fd, #90caf9, #42a5f5); /* تدرج أزرق جذاب */
+    padding: 20px 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    margin-bottom: 40px;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    overflow: hidden; /* قص أي محتوى زائد */
+    position: relative; /* للسماح بعناصر إضافية داخل العنصر */
+}
+
+    .provider-count-container:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    /* إضافة تأثير داخلي */
+    .provider-count-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: rgba(255, 255, 255, 0.1);
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        z-index: 0;
+    }
+
+    .provider-count-container:hover::before {
+        opacity: 1;
+    }
+
+.provider-count {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 1px;
+    z-index: 1; /* التأكد من أن النص فوق التأثيرات */
+}
+
+.provider-label {
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: #e1f5fe;
+    z-index: 1;
+    text-align: right;
+    margin-left: 15px;
+}
+
+
+/* Search Bar */
+.search-bar {
+    max-width: 500px;
+    margin: 50px auto;
+    display: flex;
+    justify-content: center;
+    position: relative; /* للسماح بعناصر إضافية */
+    background: linear-gradient(120deg, #f3f9fb, #e3f2fd, #90caf9); /* خلفية بتدرج جذاب */
+    border-radius: 12px;
+    padding: 5px; /* مساحة داخلية إضافية */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+    .search-bar:hover {
+        transform: scale(1.02);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    }
+
+/* Search Input */
+.search-input {
+    font-size: 1.2rem;
+    padding: 15px 20px;
+    border-radius: 8px;
+    border: none; /* إزالة الحدود */
+    width: 100%;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    background: #ffffff; /* خلفية النص */
+    color: #495057; /* لون النص */
+    z-index: 1; /* التأكد من أن العنصر فوق التأثيرات */
+}
+
+    .search-input:focus {
+        outline: none;
+        box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+        transform: scale(1.01); /* تأثير تكبير خفيف */
+    }
+
+/* Icon Button */
+.search-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.5rem;
+    color: #007bff;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+    .search-icon:hover {
+        color: #0056b3;
+    }
+
+/* Providers Table */
+.provider-table {
+    width: 100%;
+    margin-top: 50px;
+    background-color: #ffffff;
+    border-collapse: collapse;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .provider-table th,
+    .provider-table td {
+        padding: 18px 24px;
+        text-align: left;
+        border-bottom: 2px solid #dee2e6;
+        font-size: 1.2rem;
+        color: #343a40;
+    }
+
+    .provider-table th {
+        background-color: #007bff;
+        color: white;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .provider-table tr {
+        transition: background-color 0.3s ease;
+    }
+
+        .provider-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+    .provider-table td button {
+        width: 120px;
+        padding: 10px 15px;
+        font-size: 1.1rem;
+        border-radius: 8px;
+        border: none;
+        background-color: #28a745;
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+        .provider-table td button:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+
+/* Buttons */
+.delete-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+    .delete-btn:hover {
+        background-color: #c82333;
+        transform: scale(1.05);
+    }
+
+/* Feedback Message */
+.alert {
+    max-width: 700px;
+    margin: 20px auto;
+    padding: 20px;
+    font-size: 1.3rem;
+    border-radius: 10px;
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+    .alert .close {
+        font-size: 1.6rem;
+        font-weight: bold;
+        color: #721c24;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+        .alert .close:hover {
+            color: #f5c6cb;
+        }
+
+/* Spinner */
+.spinner-border {
+    margin-top: 40px;
+    width: 4rem;
+    height: 4rem;
+    border-width: 0.25rem;
+    border-top-color: #007bff;
+}

@@ -135,7 +135,7 @@ a, .btn-link {
 
 /* Collapsed Navbar */
 .custom-collapse {
-    background-color: #f1faee;
+    background-color: #20311aad;
     transition: max-height 0.5s ease-in-out;
     border-radius: 8px;
 }

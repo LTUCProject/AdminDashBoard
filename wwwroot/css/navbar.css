@@ -1,0 +1,111 @@
+﻿/* General Navigation Menu Styles */
+nav {
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(145deg, #141E30, #243B55, #1C5369);
+    color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    padding: 15px 0;
+}
+
+.nav-item {
+    padding: 10px;
+}
+
+.nav-link {
+    color: #f1f1f1;
+    font-size: 1rem;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    position: relative;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0));
+}
+
+    .nav-link:hover {
+        background: linear-gradient(135deg, #495057, #243B55);
+        color: #ffffff;
+        transform: translateX(8px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .nav-link .oi {
+        margin-right: 12px;
+        font-size: 1.5rem;
+        color: #adb5bd;
+        transition: transform 0.3s ease, color 0.3s ease;
+    }
+
+    .nav-link:hover .oi {
+        transform: rotate(360deg);
+        color: #ffffff;
+    }
+
+    /* Active Link Styling */
+    .nav-link.active {
+        background: linear-gradient(135deg, #1E90FF, #4169E1, #0D47A1);
+        color: #fff;
+        font-weight: bold;
+        box-shadow: 0 4px 12px rgba(30, 144, 255, 0.5);
+        transform: scale(1.05);
+    }
+
+        .nav-link.active .oi {
+            color: #ffffff;
+        }
+
+/* Custom Collapse Styles */
+.custom-collapse {
+    margin: 10px 0;
+}
+
+.collapse {
+    display: none;
+}
+
+.navbar-collapse.show {
+    display: flex;
+}
+
+/* Animations */
+@keyframes linkSlideIn {
+    from {
+        transform: translateX(-50px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.nav-link {
+    animation: linkSlideIn 0.4s ease-in-out;
+}
+
+/* حاوية القائمة مع التمرير */
+.scrollable-menu {
+    overflow-y: auto;
+    scrollbar-width: thin; /* لتقليل عرض شريط التمرير */
+    scrollbar-color: #495057 #f1f1f1;
+}
+
+    /* تحسين شريط التمرير على Chrome و Edge */
+    .scrollable-menu::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .scrollable-menu::-webkit-scrollbar-thumb {
+        background: #495057;
+        border-radius: 4px;
+    }
+
+        .scrollable-menu::-webkit-scrollbar-thumb:hover {
+            background: #343a40;
+        }
