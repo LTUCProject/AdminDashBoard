@@ -77,34 +77,50 @@ else
     </table>
 }
 
-<!-- Add Subscription Button (if needed in the future) -->
-<!-- <button class="btn btn-primary mt-3" @onclick="ShowCreateSubscriptionModal">Add Subscription</button> -->
 @code {
     private List<ClientSubscriptionBlazorDto> clientSubscriptions;
     private int totalSubscriptions;
     private int activeSubscriptions;
     private int expiredSubscriptions;
+    private bool isPrerenderingComplete = false;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await LoadSubscriptions();
+        if (firstRender)
+        {
+            isPrerenderingComplete = true;
+            await LoadSubscriptions(); // Load data after prerendering
+            StateHasChanged(); // Trigger a re-render
+        }
     }
 
     private async Task LoadSubscriptions()
     {
-        // Fetch all client subscriptions from the service
-        clientSubscriptions = await AdminService.GetAllClientSubscriptionsAsync();
+        if (isPrerenderingComplete)
+        {
+            clientSubscriptions = await AdminService.GetAllClientSubscriptionsAsync();
 
-        // Calculate subscription stats
-        totalSubscriptions = clientSubscriptions.Count;
-        activeSubscriptions = clientSubscriptions.Count(s => s.Status == "Active");
-        expiredSubscriptions = clientSubscriptions.Count(s => s.Status == "Expired");
+            // Calculate subscription stats
+            totalSubscriptions = clientSubscriptions.Count;
+            activeSubscriptions = clientSubscriptions.Count(s => s.Status == "Active");
+            expiredSubscriptions = clientSubscriptions.Count(s => s.Status == "Expired");
+        }
     }
 
     private async Task DeleteClientSubscription(int id)
     {
-        // Remove client subscription
-        await AdminService.RemoveClientSubscriptionAsync(id);
-        await LoadSubscriptions(); // Refresh the list after deletion
+        if (isPrerenderingComplete)
+        {
+            try
+            {
+                await AdminService.RemoveClientSubscriptionAsync(id);
+                await LoadSubscriptions(); // Refresh data after deletion
+            }
+            catch (Exception ex)
+            {
+                // Log or display the error as necessary
+                Console.WriteLine($"Error deleting subscription: {ex.Message}");
+            }
+        }
     }
 }

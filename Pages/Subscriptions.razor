@@ -11,6 +11,7 @@
     <h2 class="text-center mb-4">Manage Subscription Plans</h2>
 
     <div class="row">
+        <!-- Create Subscription Plan Section -->
         <div class="col-md-6">
             <h3>Create Subscription Plan</h3>
             <EditForm Model="newSubscriptionPlan" OnValidSubmit="HandleValidSubmit">
@@ -38,6 +39,7 @@
             </EditForm>
         </div>
 
+        <!-- Current Subscription Plans Section -->
         <div class="col-md-6">
             <h3>Current Subscription Plans</h3>
             <div class="list-group">
@@ -57,7 +59,7 @@
                             <h5>@plan.Name</h5>
                             <p>@plan.Description</p>
                             <p><strong>Price:</strong> $@plan.Price | <strong>Duration:</strong> @plan.DurationInDays days</p>
-                                    <button class="btn btn-danger btn-sm" @onclick="() => DeleteSubscriptionPlan(plan.SubscriptionPlanId)">Delete</button>
+                            <button class="btn btn-danger btn-sm" @onclick="() => DeleteSubscriptionPlan(plan.SubscriptionPlanId)">Delete</button>
                         </div>
                     }
                 }
@@ -68,24 +70,57 @@
 
 @code {
     private SubscriptionPlanDto newSubscriptionPlan = new SubscriptionPlanDto();
-    private List<SubscriptionPlanBlazorDto> subscriptionPlans;
+    private List<SubscriptionPlanBlazorDto> subscriptionPlans = new List<SubscriptionPlanBlazorDto>();
+    private bool isInitialized = false;
 
     protected override async Task OnInitializedAsync()
     {
-        subscriptionPlans = await AdminService.GetAllSubscriptionPlansAsync();
+        await LoadSubscriptionPlans();
+        isInitialized = true;
+    }
+
+    private async Task LoadSubscriptionPlans()
+    {
+        try
+        {
+            subscriptionPlans = await AdminService.GetAllSubscriptionPlansAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading subscription plans: {ex.Message}");
+        }
     }
 
     private async Task HandleValidSubmit()
     {
-        await AdminService.CreateSubscriptionPlanAsync(newSubscriptionPlan);
-        newSubscriptionPlan = new SubscriptionPlanDto(); // Reset the form
-        subscriptionPlans = await AdminService.GetAllSubscriptionPlansAsync(); // Refresh the list
+        if (isInitialized)
+        {
+            try
+            {
+                await AdminService.CreateSubscriptionPlanAsync(newSubscriptionPlan);
+                newSubscriptionPlan = new SubscriptionPlanDto(); // Reset the form
+                await LoadSubscriptionPlans(); // Refresh the list
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error creating subscription plan: {ex.Message}");
+            }
+        }
     }
 
     private async Task DeleteSubscriptionPlan(int id)
     {
-        await AdminService.DeleteSubscriptionPlanAsync(id); // Call method without assignment
-        subscriptionPlans = await AdminService.GetAllSubscriptionPlansAsync(); // Refresh the list after deletion
+        if (isInitialized)
+        {
+            try
+            {
+                await AdminService.DeleteSubscriptionPlanAsync(id);
+                await LoadSubscriptionPlans(); // Refresh the list after deletion
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error deleting subscription plan: {ex.Message}");
+            }
+        }
     }
-
 }
