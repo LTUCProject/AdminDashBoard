@@ -6,13 +6,20 @@
 
 <link href="css/index.css" rel="stylesheet" />
 
-@if (!_isAdmin)
+@if (_isLoading)
+{
+    <div class="loading">
+        <p>Loading...</p>
+    </div>
+}
+else if (!_isAdmin)
 {
     <div class="login-container">
         <button class="btn btn-primary" @onclick="NavigateToLogin">Login</button>
     </div>
 }
 else
+
 {
     <div class="dashboard">
         <header class="dashboard-header">
@@ -62,6 +69,7 @@ else
 
 @code {
     private bool _isAdmin;
+    private bool _isLoading = true;
     private int clientsCount;
     private int providersCount;
     private int stationsCount;
@@ -72,7 +80,11 @@ else
         if (firstRender)
         {
             _isAdmin = await AuthService.IsAdmin();
-            await LoadDashboardData();
+            if (_isAdmin)
+            {
+                await LoadDashboardData();
+            }
+            _isLoading = false;  // Set loading state to false once data is fetched
             StateHasChanged(); // Trigger re-render
         }
     }
@@ -80,10 +92,15 @@ else
     private async Task LoadDashboardData()
     {
         // Fetching counts for clients, providers, stations, and vehicles
-        clientsCount = (await AdminService.GetAllClientsAsync()).Count;
-        providersCount = (await AdminService.GetAllProvidersAsync()).Count;
-        stationsCount = (await AdminService.GetAllChargingStationsAsync()).Count;
-        vehiclesCount = (await AdminService.GetAllVehiclesAsync()).Count;
+        var clients = await AdminService.GetAllClientsAsync();
+        var providers = await AdminService.GetAllProvidersAsync();
+        var stations = await AdminService.GetAllChargingStationsAsync();
+        var vehicles = await AdminService.GetAllVehiclesAsync();
+
+        clientsCount = clients.Count;
+        providersCount = providers.Count;
+        stationsCount = stations.Count;
+        vehiclesCount = vehicles.Count;
     }
 
     private void NavigateToLogin()
