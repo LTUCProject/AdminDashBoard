@@ -29,10 +29,21 @@ namespace Admin.Services
                 return;
             }
 
-            // Delay the call until after the component has rendered
+            // Retrieve the token from localStorage
             var token = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "token");
+
+            // Log the token to check if it exists
+            Console.WriteLine($"Token from localStorage: {token}");
+
+            if (string.IsNullOrEmpty(token))
+            {
+                // Handle the case when the token is not found or is invalid
+                throw new Exception("Authorization token is missing or invalid.");
+            }
+
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
+
 
 
         //Client Services//
