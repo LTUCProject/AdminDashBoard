@@ -52,7 +52,7 @@
 .quick-stats {
     display: flex;
     justify-content: space-around;
-    margin-bottom: 50px;
+    margin-bottom: 0px;
 }
 
 .stats-card {

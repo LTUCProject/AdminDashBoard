@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\Logo2.png" />
     <None Include="wwwroot\css\navbar.css" />
   </ItemGroup>
 
@@ -21,6 +22,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MidProject\MidProject\MidProject.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="assets\" />
   </ItemGroup>
 
 </Project>

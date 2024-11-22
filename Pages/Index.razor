@@ -14,9 +14,8 @@
 }
 else if (!_isAdmin)
 {
-    <div class="login-container">
-        <button class="btn btn-primary" @onclick="NavigateToLogin">Login</button>
-    </div>
+    Navigation.NavigateTo("/login", forceLoad: true);
+
 }
 else
 
