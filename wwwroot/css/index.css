@@ -54,7 +54,6 @@
     justify-content: space-around;
     margin-bottom: 0px;
 }
-
 .stats-card {
     background-color: #f8f9fa;
     padding: 20px;
@@ -63,6 +62,10 @@
     width: 22%;
     text-align: center;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex; /* لتفعيل Flexbox */
+    flex-direction: column; /* ترتيب المحتويات عمودياً */
+    justify-content: space-between; /* توزيع العناصر بشكل متساوٍ مع الحفاظ على الزر أسفل */
+    height: 300px; /* لتوحيد ارتفاع الكارد */
 }
 
     .stats-card:hover {
@@ -88,11 +91,15 @@
     color: white;
     text-decoration: none;
     border-radius: 5px;
+    margin-top: auto; /* لضمان بقاء الزر في الأسفل */
+    width: 102px;
+    text-align: center;
 }
 
     .stats-card a:hover {
         background-color: #0056b3;
     }
+
 
 /* Features Section */
 .features {
