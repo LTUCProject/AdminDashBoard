@@ -18,11 +18,11 @@
     }
 
 .charging-station-count {
-    font-size: 2rem;
+    font-size: 1.6rem; /* تم تصغير الحجم */
     font-weight: 700;
     color: #007bff;
     text-align: center;
-    padding : 10px;
+    padding: 10px;
     letter-spacing: 2px;
     text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
 }
@@ -37,10 +37,11 @@ h4 {
     text-transform: uppercase;
     letter-spacing: 1px;
     color: #212529;
+    font-size: 1.25rem; /* تم تصغير الحجم */
 }
 
 h5 {
-    font-size: 1.5rem;
+    font-size: 1.2rem; /* تم تصغير الحجم */
     color: #6c757d;
     font-weight: 500;
     line-height: 1.6;
@@ -63,10 +64,10 @@ h5 {
 }
 
     .table th, .table td {
-        padding: 16px 24px;
+        padding: 12px 20px; /* تم تصغير الحجم */
         text-align: left;
         border-bottom: 1px solid #dee2e6;
-        font-size: 1.1rem;
+        font-size: 1rem; /* تم تصغير الحجم */
         color: #343a40;
     }
 
@@ -93,8 +94,8 @@ h5 {
 
 /* Button Styles */
 .btn-sm {
-    padding: 10px 20px;
-    font-size: 1rem;
+    padding: 8px 16px; /* تم تصغير الحجم */
+    font-size: 0.9rem; /* تم تصغير الحجم */
     font-weight: 600;
     border-radius: 10px;
     background-color: #28a745;
@@ -112,8 +113,8 @@ h5 {
 .alert-warning {
     background-color: #fff3cd;
     border: 1px solid #ffeeba;
-    padding: 20px;
-    font-size: 1.2rem;
+    padding: 16px; /* تم تصغير الحجم */
+    font-size: 1.1rem; /* تم تصغير الحجم */
     border-radius: 10px;
     color: #856404;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
@@ -122,7 +123,7 @@ h5 {
 }
 
     .alert-warning .close {
-        font-size: 1.5rem;
+        font-size: 1.2rem; /* تم تصغير الحجم */
         font-weight: bold;
         color: #856404;
         cursor: pointer;
@@ -135,8 +136,8 @@ h5 {
 
 /* Spinner */
 .spinner-border {
-    width: 4rem;
-    height: 4rem;
+    width: 3rem; /* تم تصغير الحجم */
+    height: 3rem; /* تم تصغير الحجم */
     border-width: 0.3rem;
     border-top-color: #007bff;
     animation: spin 1s linear infinite;
@@ -154,22 +155,22 @@ h5 {
 }
 
 .ap {
-    font-size: 1.2rem; /* حجم النص */
-    color: #1e88e5; /* لون النص أزرق احترافي */
-    background-color: #f3f9fb; /* خلفية فاتحة */
-    border: 1px solid #90caf9; /* إطار أزرق فاتح */
-    border-radius: 8px; /* زوايا مستديرة */
-    padding: 10px 15px; /* مسافة داخلية */
-    text-align: center; /* توسيط النص */
-    margin: 20px auto; /* مسافة خارجية وتوسيط العنصر */
-    max-width: 400px; /* عرض أقصى */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* ظل بسيط لإبراز العنصر */
-    font-family: 'Arial', sans-serif; /* خط بسيط وأنيق */
-    transition: all 0.3s ease; /* تأثير عند التفاعل */
+    font-size: 1rem; /* تم تصغير الحجم */
+    color: #1e88e5;
+    background-color: #f3f9fb;
+    border: 1px solid #90caf9;
+    border-radius: 8px;
+    padding: 8px 12px; /* تم تصغير الحجم */
+    text-align: center;
+    margin: 15px auto; /* تم تصغير الحجم */
+    max-width: 350px; /* تم تصغير الحجم */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+    transition: all 0.3s ease;
 }
 
     .ap:hover {
-        background-color: #e3f2fd; /* تغيير الخلفية عند التمرير */
-        color: #1565c0; /* تغيير لون النص عند التمرير */
-        transform: scale(1.02); /* تكبير خفيف عند التمرير */
+        background-color: #e3f2fd;
+        color: #1565c0;
+        transform: scale(1.02);
     }
